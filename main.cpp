@@ -1,11 +1,36 @@
 #include <iostream>
 #include <getopt.h>
+#include <SFML/Graphics.hpp>
 
 #include "server/server.h"
 #include "client/client.h"
 
 int main(int argc, char *argv[])
 {
+    // SFML test code
+    sf::RenderWindow window(sf::VideoMode(640, 480), "SFML Application");
+    sf::CircleShape shape;
+    shape.setRadius(40.f);
+    shape.setPosition(100.f, 100.f);
+    shape.setFillColor(sf::Color::Cyan);
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        window.clear();
+        window.draw(shape);
+        window.display();
+    }
+    // SFML test code
+
+
     int option;
     int s_option = 0;
     int c_option = 0;
