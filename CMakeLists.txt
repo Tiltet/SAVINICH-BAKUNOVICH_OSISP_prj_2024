@@ -10,6 +10,7 @@ add_executable(SeaBattle main.cpp
         server/server.h
         client/client.h
         client/client.cpp
+        interface/interface.cpp
 )
 
 include_directories(/usr/local/include)
