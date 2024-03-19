@@ -43,12 +43,12 @@ struct option long_options[] =
     if (s_option == 1)
     {
         std::cout << "Запускаем сервер..." << std::endl;
-        bool num = server();
+        int num = server_v2();
         return num;
     }
     else if (c_option == 1)
     {
-        bool num = client();
+        int num = client_v2();
         return num;
     }
     else
