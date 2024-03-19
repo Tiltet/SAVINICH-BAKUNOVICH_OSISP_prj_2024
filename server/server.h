@@ -16,7 +16,18 @@
 #include <ifaddrs.h>
 #include <netinet/in.h>
 
+// Created by Nikita Bakunovich
+
+#include <sys/types.h>
+#include <cstdio>
+#include <stdlib.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+
 bool server();
+int server_v2();
 std::string getIP();
 
 #endif //COURSE_WORK_SERVER_H
