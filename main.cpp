@@ -37,7 +37,6 @@ struct option long_options[] =
         return 1;
     }
 
-
     if (s_option == 1)
     {
         std::cout << "Запускаем сервер..." << std::endl;
