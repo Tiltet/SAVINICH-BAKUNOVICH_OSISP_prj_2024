@@ -1,0 +1,60 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.27"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Course_Work",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "SeaBattle::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SeaBattle-Debug-3d8624aba4628e59d850.json",
+					"name" : "SeaBattle",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/nikitabakunovich/\u0414\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u044b/GitHub/SAVINICH-BAKUNOVICH_OSISP_prj_2024/cmake-build-debug",
+		"source" : "/home/nikitabakunovich/\u0414\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u044b/GitHub/SAVINICH-BAKUNOVICH_OSISP_prj_2024"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}
