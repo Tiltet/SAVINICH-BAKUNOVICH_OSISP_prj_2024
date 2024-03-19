@@ -3,9 +3,12 @@
 
 #include "server/server.h"
 #include "client/client.h"
+#include "interface/interface.h"
 
 int main(int argc, char *argv[])
 {
+    interface(); // начальная функция отрисовки интерфейса
+
     int option;
     int s_option = 0;
     int c_option = 0;
@@ -36,7 +39,6 @@ struct option long_options[] =
         std::cerr << "Ошибка: Нельзя указывать оба маркера -s и -c одновременно." << std::endl;
         return 1;
     }
-
 
     if (s_option == 1)
     {

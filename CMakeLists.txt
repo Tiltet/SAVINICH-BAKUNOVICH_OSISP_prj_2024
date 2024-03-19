@@ -1,7 +1,9 @@
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.17)
 project(Course_Work)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+set(SOURCE_FILES main.cpp)
 
 add_executable(SeaBattle main.cpp
         server/server.cpp
@@ -12,6 +14,7 @@ add_executable(SeaBattle main.cpp
         utilities/func.cpp
         utilities/func.h
         client/client_v2.cpp
+        interface/interface.cpp
 )
 
 include_directories(/usr/local/include)
