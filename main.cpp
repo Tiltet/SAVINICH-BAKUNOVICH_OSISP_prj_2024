@@ -46,7 +46,7 @@ struct option long_options[] =
     }
     else if (c_option == 1)
     {
-        bool num = client();
+        int num = client_v2();
         return num;
     }
     else

@@ -9,4 +9,7 @@ add_executable(SeaBattle main.cpp
         client/client.h
         client/client.cpp
         server/server_v2.cpp
+        utilities/func.cpp
+        utilities/func.h
+        client/clien_v2.cpp
 )
