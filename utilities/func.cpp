@@ -3,11 +3,11 @@
 //
 
 #include "func.h"
-#include <sys/types.h>
-#include <sys/socket.h>
+#include "../server/server.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <ifaddrs.h>
+#include <netinet/in.h>
 #include <arpa/inet.h>
 
 void errorCatching(int res, const char* serror){
@@ -53,4 +53,56 @@ void Inet_pton(int af, const char *src, void *dst) {
         exit(EXIT_FAILURE);
     }
     errorCatching(res, "inet_pton failure");
+}
+
+void getIPAddress(char *ipAddress) {
+    int sockfd;
+    struct ifreq ifr;
+    struct sockaddr_in *sin;
+
+    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (sockfd < 0) {
+        perror("Socket creation failed");
+        exit(1);
+    }
+
+    struct ifconf ifc;
+    char buf[4096];
+
+    ifc.ifc_len = sizeof(buf);
+    ifc.ifc_buf = buf;
+
+    if (ioctl(sockfd, SIOCGIFCONF, &ifc) == -1) {
+        perror("Unable to get interface configuration");
+        close(sockfd);
+        exit(1);
+    }
+
+    struct ifreq *ifrArray = (struct ifreq *)ifc.ifc_req;
+    int numInterfaces = ifc.ifc_len / sizeof(struct ifreq);
+
+    int i;
+    for (i = 0; i < numInterfaces; i++) {
+        strncpy(ifr.ifr_name, ifrArray[i].ifr_name, IFNAMSIZ);
+
+        if (ioctl(sockfd, SIOCGIFFLAGS, &ifr) == 0) {
+            if (ifr.ifr_flags & IFF_UP) {
+                if (ioctl(sockfd, SIOCGIFADDR, &ifr) < 0) {
+                    perror("Unable to get IP address");
+                    close(sockfd);
+                    exit(1);
+                }
+
+                sin = (struct sockaddr_in *)&ifr.ifr_addr;
+                strcpy(ipAddress, inet_ntoa(sin->sin_addr));
+                break;
+            }
+        } else {
+            perror("Unable to get interface flags");
+            close(sockfd);
+            exit(1);
+        }
+    }
+
+    close(sockfd);
 }

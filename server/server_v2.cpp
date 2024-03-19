@@ -9,13 +9,18 @@
 int server_v2() {
     int socket = Socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in adr = {0};
+
+    char ipAddress[INET_ADDRSTRLEN];
+
     adr.sin_family = AF_INET;
     adr.sin_port = htons(PORT);
     Bind(socket, (struct sockaddr*) &adr, sizeof adr);
     Listen(socket, 1);
 
-    std::string adressIP = getIP();
-    std::cout << "IP игры - " << adressIP << std::endl;
+    getIPAddress(ipAddress);
+    printf("IP адрес: %s\n", ipAddress);
+
+    std::cout << "IP игры - " << ipAddress << std::endl;
     std::cout << "Ожидание подключения клиента..." << std::endl;
 
     socklen_t adrlen = sizeof adr;

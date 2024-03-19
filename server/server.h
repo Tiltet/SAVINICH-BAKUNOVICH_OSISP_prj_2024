@@ -21,10 +21,19 @@
 #include <sys/types.h>
 #include <cstdio>
 #include <stdlib.h>
-#include <stdlib.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <net/if.h>
+
+#include <stdio.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <ifaddrs.h>
+#include <netinet/in.h>
+#include <net/if.h>
+#include <netinet/in.h>
+
 
 bool server();
 int server_v2();
