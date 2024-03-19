@@ -11,5 +11,5 @@ add_executable(SeaBattle main.cpp
         server/server_v2.cpp
         utilities/func.cpp
         utilities/func.h
-        client/clien_v2.cpp
+        client/client_v2.cpp
 )
