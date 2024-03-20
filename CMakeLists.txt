@@ -14,10 +14,12 @@ add_executable(SeaBattle main.cpp
         client/client_v2.cpp
         logicpart/logic.cpp
         logicpart/logic.h
+        interface/interface.cpp
+        interface/interface.h
 )
 
 include_directories(/usr/local/include)
-set(CMAKE_PREFIX_PATH "/home/nikitabakunovich/Загрузки/SFML-2.5.1-linux-gcc-64-bit/SFML-2.5.1/lib/cmake/SFML" ${CMAKE_PREFIX_PATH})
+#set(CMAKE_PREFIX_PATH "/home/nikitabakunovich/Загрузки/SFML-2.5.1-linux-gcc-64-bit/SFML-2.5.1/lib/cmake/SFML" ${CMAKE_PREFIX_PATH})
 
 find_package(SFML 2.5 COMPONENTS system window graphics network REQUIRED)
 include_directories(${SFML_INCLUDE_DIRS})
