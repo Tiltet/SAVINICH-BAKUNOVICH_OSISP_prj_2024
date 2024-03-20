@@ -1,9 +1,7 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.27)
 project(Course_Work)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
-set(SOURCE_FILES main.cpp)
+set(CMAKE_CXX_STANDARD 17)
 
 add_executable(SeaBattle main.cpp
         server/server.cpp
@@ -15,10 +13,12 @@ add_executable(SeaBattle main.cpp
         utilities/func.h
         client/client_v2.cpp
         interface/interface.cpp
+        interface/interface.h
 )
 
 include_directories(/usr/local/include)
+#set(CMAKE_PREFIX_PATH "/home/nikitabakunovich/Загрузки/SFML-2.5.1-linux-gcc-64-bit/SFML-2.5.1/lib/cmake/SFML" ${CMAKE_PREFIX_PATH})
 
-find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
+find_package(SFML 2.5 COMPONENTS system window graphics network REQUIRED)
 include_directories(${SFML_INCLUDE_DIRS})
-target_link_libraries(SeaBattle sfml-system sfml-window sfml-graphics sfml-audio sfml-network)
+target_link_libraries(SeaBattle sfml-system sfml-window sfml-graphics sfml-network)

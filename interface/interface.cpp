@@ -12,7 +12,7 @@ void interface()
 
     // Создание шрифта для заголовка
     sf::Font font;
-    if (!font.loadFromFile("way......."))
+    if (!font.loadFromFile("../interface/fonts/Arial Unicode.ttf"))
     {
         return;
     }
