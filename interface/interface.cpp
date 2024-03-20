@@ -19,7 +19,7 @@ void interface()
 
     // Создание текста заголовка
     sf::Text titleText("Sea Battle", font, 24);
-    titleText.setFillColor(sf::Color::Black);
+    titleText.setFillColor(sf::Color::White);
 
     // Получение размеров текста
     sf::FloatRect textBounds = titleText.getGlobalBounds();
@@ -40,7 +40,7 @@ void interface()
                 window.close();
         }
 
-        window.clear(sf::Color::White);
+        window.clear(sf::Color::Black);
         window.draw(titleText);
         window.display();
     }
