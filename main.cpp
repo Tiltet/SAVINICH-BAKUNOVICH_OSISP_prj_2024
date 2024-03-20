@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    // interface(); // начальная функция отрисовки интерфейса
+    interface(); // начальная функция отрисовки интерфейса
 
     int option;
     int s_option = 0;
