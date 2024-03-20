@@ -106,3 +106,46 @@ void getIPAddress(char *ipAddress) {
 
     close(sockfd);
 }
+
+char *get_ip_address(char *hostname) {
+    struct hostent *host_info;
+    char **ip_list;
+    char *ip_address = NULL;
+
+    host_info = gethostbyname(hostname);
+    if (host_info == NULL) {
+        printf("Ошибка при получении информации о хосте.\n");
+        return NULL;
+    }
+
+    ip_list = host_info->h_addr_list;
+    for (int i = 0; ip_list[i] != NULL; i++) {
+        struct in_addr ip;
+        memcpy(&ip, ip_list[i], sizeof(ip));
+        ip_address = strdup(inet_ntoa(ip));
+        break; // Выбираем первый IP-адрес из списка
+    }
+
+    return ip_address;
+}
+
+void net_scan(char *hostname) {
+    struct hostent *host_info;
+    char **ip_list;
+    char *ip_address = NULL;
+
+    host_info = gethostbyname(hostname);
+    if (host_info == NULL) {
+        printf("Ошибка при получении информации о хосте.\n");
+        //return NULL;
+    }
+
+    ip_list = host_info->h_addr_list;
+    for (int i = 0; ip_list[i] != NULL; i++) {
+        struct in_addr ip;
+        memcpy(&ip, ip_list[i], sizeof(ip));
+        ip_address = strdup(inet_ntoa(ip));
+        printf("Доступные IP адреса для подключения: %s\n", ip_address);
+        //break; // Выбираем первый IP-адрес из списка
+    }
+}

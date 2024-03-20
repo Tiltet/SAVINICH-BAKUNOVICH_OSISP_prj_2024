@@ -33,6 +33,9 @@
 #include <netinet/in.h>
 #include <net/if.h>
 #include <netinet/in.h>
+#include <netdb.h>
+
+#include <netinet/if_ether.h>
 
 
 bool server();
