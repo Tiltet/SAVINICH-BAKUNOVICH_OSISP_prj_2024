@@ -2,46 +2,67 @@
 // Created by Тимофей Савинич on 19.03.24.
 //
 
-#include <SFML/Graphics.hpp>
 #include "interface.h"
+
+const int gridSize = 8;
+const int cellSize = 50;
 
 void interface()
 {
-    // SFML test code
-    sf::RenderWindow window(sf::VideoMode(1240, 720), "Sea Battle");
+    sf::RenderWindow window(sf::VideoMode(1240, 720), "Grid Example");
 
-    // Создание шрифта для заголовка
-    sf::Font font;
-    if (!font.loadFromFile("../interface/fonts/Arial Unicode.ttf"))
-    {
-        return;
-    }
-
-    // Создание текста заголовка
-    sf::Text titleText("Sea Battle", font, 24);
-    titleText.setFillColor(sf::Color::White);
-
-    // Получение размеров текста
-    sf::FloatRect textBounds = titleText.getGlobalBounds();
-
-    // Центрирование текста
-    float x = (window.getSize().x - textBounds.width) / 2.0f;
-    float y = (window.getSize().y - textBounds.height) / 2.0f;
-    titleText.setPosition(x,y);
-
-    // ОСНОВНОЙ ЦИКЛ ПРИЛОЖЕНИЯ
     while (window.isOpen())
     {
         sf::Event event;
-
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
 
-        window.clear(sf::Color::Black);
-        window.draw(titleText);
+        window.clear(sf::Color::Cyan);
+        drawGrid(window, 0);
+        drawGrid(window, 1);
         window.display();
+    }
+}
+
+void drawGrid(sf::RenderWindow& window, bool check)
+{
+    sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
+    cell.setOutlineThickness(1.0f);
+    cell.setOutlineColor(sf::Color::Black);
+
+    sf::Color color1(175, 200, 225);   // Цвет ячейки 1
+    sf::Color color2(200, 225, 175);   // Цвет ячейки 2
+
+    for (int row = 0; row < gridSize; ++row)
+    {
+        for (int col = 0; col < gridSize; ++col)
+        {
+            int x = col * cellSize;
+            int y = row * cellSize;
+
+            if (check == true)
+            {
+                cell.setPosition(x, 360 - y);
+            }
+            else if (check == false)
+            {
+                cell.setPosition(1240 - x - cellSize, 360 - y);
+            }
+
+            // Чередуем цвета ячеек
+            if ((row + col) % 2 == 0)
+            {
+                cell.setFillColor(color1);
+            }
+            else
+            {
+                cell.setFillColor(color2);
+            }
+
+            window.draw(cell);
+        }
     }
 }
