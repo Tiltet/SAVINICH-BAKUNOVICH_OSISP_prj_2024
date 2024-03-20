@@ -7,41 +7,23 @@
 
 void interface()
 {
-    // SFML test code
-    sf::RenderWindow window(sf::VideoMode(1240, 720), "Sea Battle");
+    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Test");
 
-    // Создание шрифта для заголовка
-    sf::Font font;
-    if (!font.loadFromFile("way......."))
-    {
-        return;
-    }
+    sf::RectangleShape rectangle(sf::Vector2f(200, 100));
+    rectangle.setFillColor(sf::Color::Red);
+    rectangle.setPosition(300, 250);
 
-    // Создание текста заголовка
-    sf::Text titleText("Sea Battle", font, 24);
-    titleText.setFillColor(sf::Color::Black);
-
-    // Получение размеров текста
-    sf::FloatRect textBounds = titleText.getGlobalBounds();
-
-    // Центрирование текста
-    float x = (window.getSize().x - textBounds.width) / 2.0f;
-    float y = (window.getSize().y - textBounds.height) / 2.0f;
-    titleText.setPosition(x,y);
-
-    // ОСНОВНОЙ ЦИКЛ ПРИЛОЖЕНИЯ
     while (window.isOpen())
     {
         sf::Event event;
-
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
 
-        window.clear(sf::Color::White);
-        window.draw(titleText);
+        window.clear();
+        window.draw(rectangle);
         window.display();
     }
 }

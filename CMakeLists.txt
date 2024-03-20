@@ -15,6 +15,10 @@ add_executable(SeaBattle main.cpp
 
 include_directories(/usr/local/include)
 
-find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
+set(CMAKE_PREFIX_PATH "/home/nikitabakunovich/Загрузки/SFML-2.5.1-linux-gcc-64-bit/SFML-2.5.1/lib/cmake/SFML" ${CMAKE_PREFIX_PATH})
+
+
+
+find_package(SFML 2.5 COMPONENTS system window graphics network REQUIRED)
 include_directories(${SFML_INCLUDE_DIRS})
-target_link_libraries(SeaBattle sfml-system sfml-window sfml-graphics sfml-audio sfml-network)
+target_link_libraries(SeaBattle sfml-system sfml-window sfml-graphics sfml-network)
