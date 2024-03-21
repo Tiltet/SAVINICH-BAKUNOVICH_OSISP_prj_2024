@@ -37,7 +37,7 @@ int client_v2() {
 //    }
 //    write(STDOUT_FILENO, buf, nread);
     while (1) {
-        game();
+        //game();
         printf("Enter message: ");
         fgets(strData, MAX_BUFFER, stdin);
         send(fd, strData, strlen(strData), 0);

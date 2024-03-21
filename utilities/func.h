@@ -19,9 +19,7 @@ void Connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 
 void Inet_pton(int af, const char *src, void *dst);
 
-void getIPAddress(char *ipAddress);
-
-std::string get_ip_address(char *hostname);
+std::string getIpAddress(char *hostname);
 
 std::string getIP();
 

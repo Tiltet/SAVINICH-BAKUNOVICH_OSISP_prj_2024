@@ -85,11 +85,7 @@ int server_v2() {
         }
         pthread_t thread_id;
         pthread_create(&thread_id, NULL, handle_client, &fd);
-        game();
+        //game();
     }
-
-    //close(socket);
-    close(socket);
-    return 0;
 }
 

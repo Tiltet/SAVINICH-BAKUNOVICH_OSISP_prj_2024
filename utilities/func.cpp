@@ -55,59 +55,59 @@ void Inet_pton(int af, const char *src, void *dst) {
     errorCatching(res, "inet_pton failure");
 }
 
-void getIPAddress(char *ipAddress) {
-    int sockfd;
-    struct ifreq ifr;
-    struct sockaddr_in *sin;
+//void getIPAddress(char *ipAddress) {
+//    int sockfd;
+//    struct ifreq ifr;
+//    struct sockaddr_in *sin;
+//
+//    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+//    if (sockfd < 0) {
+//        perror("Socket creation failed");
+//        exit(1);
+//    }
+//
+//    struct ifconf ifc;
+//    char buf[4096];
+//
+//    ifc.ifc_len = sizeof(buf);
+//    ifc.ifc_buf = buf;
+//
+//    if (ioctl(sockfd, SIOCGIFCONF, &ifc) == -1) {
+//        perror("Unable to get interface configuration");
+//        close(sockfd);
+//        exit(1);
+//    }
+//
+//    struct ifreq *ifrArray = (struct ifreq *)ifc.ifc_req;
+//    int numInterfaces = ifc.ifc_len / sizeof(struct ifreq);
+//
+//    int i;
+//    for (i = 0; i < numInterfaces; i++) {
+//        strncpy(ifr.ifr_name, ifrArray[i].ifr_name, IFNAMSIZ);
+//
+//        if (ioctl(sockfd, SIOCGIFFLAGS, &ifr) == 0) {
+//            if (ifr.ifr_flags & IFF_UP) {
+//                if (ioctl(sockfd, SIOCGIFADDR, &ifr) < 0) {
+//                    perror("Unable to get IP address");
+//                    close(sockfd);
+//                    exit(1);
+//                }
+//
+//                sin = (struct sockaddr_in *)&ifr.ifr_addr;
+//                strcpy(ipAddress, inet_ntoa(sin->sin_addr));
+//                break;
+//            }
+//        } else {
+//            perror("Unable to get interface flags");
+//            close(sockfd);
+//            exit(1);
+//        }
+//    }
+//
+//    close(sockfd);
+//}
 
-    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-    if (sockfd < 0) {
-        perror("Socket creation failed");
-        exit(1);
-    }
-
-    struct ifconf ifc;
-    char buf[4096];
-
-    ifc.ifc_len = sizeof(buf);
-    ifc.ifc_buf = buf;
-
-    if (ioctl(sockfd, SIOCGIFCONF, &ifc) == -1) {
-        perror("Unable to get interface configuration");
-        close(sockfd);
-        exit(1);
-    }
-
-    struct ifreq *ifrArray = (struct ifreq *)ifc.ifc_req;
-    int numInterfaces = ifc.ifc_len / sizeof(struct ifreq);
-
-    int i;
-    for (i = 0; i < numInterfaces; i++) {
-        strncpy(ifr.ifr_name, ifrArray[i].ifr_name, IFNAMSIZ);
-
-        if (ioctl(sockfd, SIOCGIFFLAGS, &ifr) == 0) {
-            if (ifr.ifr_flags & IFF_UP) {
-                if (ioctl(sockfd, SIOCGIFADDR, &ifr) < 0) {
-                    perror("Unable to get IP address");
-                    close(sockfd);
-                    exit(1);
-                }
-
-                sin = (struct sockaddr_in *)&ifr.ifr_addr;
-                strcpy(ipAddress, inet_ntoa(sin->sin_addr));
-                break;
-            }
-        } else {
-            perror("Unable to get interface flags");
-            close(sockfd);
-            exit(1);
-        }
-    }
-
-    close(sockfd);
-}
-
-std::string get_ip_address(char *hostname) {
+std::string getIpAddress(char *hostname) {
     struct hostent *host_info;
     char **ip_list;
     char *ip_address = NULL;
@@ -186,14 +186,10 @@ void net_scan(char *hostname) {
 
 
 
-std::string getIpForOS(char *hostname) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        std::string getIpForOS(char *hostname) {
 #ifdef __APPLE__
     return getIP();
 #elif __linux__
-    return get_ip_address(hostname);
-#elif _WIN32
-    return getClipCommand("powershell.exe -command Get-clipboard");
-    #else
-        return "Error: unknown operating system.\n";
+    return getIpAddress(hostname);
 #endif
 }

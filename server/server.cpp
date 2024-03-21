@@ -15,7 +15,7 @@ bool server()
         return 1;
     }
 
-    std::string adressIP = getIP();
+    //std::string adressIP = getIP();
 
     struct sockaddr_in serverAddress {};
     serverAddress.sin_family = AF_INET;
@@ -36,7 +36,7 @@ bool server()
         return 1;
     }
 
-    std::cout << "IP игры - " << adressIP << std::endl;
+    //std::cout << "IP игры - " << adressIP << std::endl;
     std::cout << "Ожидание подключения клиента..." << std::endl;
 
     struct sockaddr_in clientAddress {};
@@ -73,37 +73,37 @@ bool server()
     return 0;
 }
 
-std::string getIP_1()
-{
-    std::string ipAddress;
-    struct ifaddrs* ifAddrStruct = nullptr;
-    struct ifaddrs* ifa = nullptr;
-    void* tmpAddrPtr = nullptr;
-
-    getifaddrs(&ifAddrStruct);
-
-    for (ifa = ifAddrStruct; ifa != nullptr; ifa = ifa->ifa_next)
-    {
-        if (!ifa->ifa_addr)
-        {
-            continue;
-        }
-
-        // IPv4 and interface name "en0"
-        if (ifa->ifa_addr->sa_family == AF_INET && strcmp(ifa->ifa_name, "en0") == 0)
-        {
-            tmpAddrPtr = &reinterpret_cast<struct sockaddr_in*>(ifa->ifa_addr)->sin_addr;
-            char addressBuffer[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-            ipAddress = std::string(addressBuffer);
-            break;
-        }
-    }
-
-    if (ifAddrStruct != nullptr)
-    {
-        freeifaddrs(ifAddrStruct);
-    }
-
-    return ipAddress;
-}
+//std::string getIP_1()
+//{
+//    std::string ipAddress;
+//    struct ifaddrs* ifAddrStruct = nullptr;
+//    struct ifaddrs* ifa = nullptr;
+//    void* tmpAddrPtr = nullptr;
+//
+//    getifaddrs(&ifAddrStruct);
+//
+//    for (ifa = ifAddrStruct; ifa != nullptr; ifa = ifa->ifa_next)
+//    {
+//        if (!ifa->ifa_addr)
+//        {
+//            continue;
+//        }
+//
+//        // IPv4 and interface name "en0"
+//        if (ifa->ifa_addr->sa_family == AF_INET && strcmp(ifa->ifa_name, "en0") == 0)
+//        {
+//            tmpAddrPtr = &reinterpret_cast<struct sockaddr_in*>(ifa->ifa_addr)->sin_addr;
+//            char addressBuffer[INET_ADDRSTRLEN];
+//            inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
+//            ipAddress = std::string(addressBuffer);
+//            break;
+//        }
+//    }
+//
+//    if (ifAddrStruct != nullptr)
+//    {
+//        freeifaddrs(ifAddrStruct);
+//    }
+//
+//    return ipAddress;
+//}
