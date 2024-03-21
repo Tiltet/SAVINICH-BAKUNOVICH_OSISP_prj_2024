@@ -107,7 +107,7 @@ void getIPAddress(char *ipAddress) {
     close(sockfd);
 }
 
-char *get_ip_address(char *hostname) {
+std::string get_ip_address(char *hostname) {
     struct hostent *host_info;
     char **ip_list;
     char *ip_address = NULL;
@@ -129,6 +129,41 @@ char *get_ip_address(char *hostname) {
     return ip_address;
 }
 
+std::string getIP()
+{
+    std::string ipAddress;
+    struct ifaddrs* ifAddrStruct = nullptr;
+    struct ifaddrs* ifa = nullptr;
+    void* tmpAddrPtr = nullptr;
+
+    getifaddrs(&ifAddrStruct);
+
+    for (ifa = ifAddrStruct; ifa != nullptr; ifa = ifa->ifa_next)
+    {
+        if (!ifa->ifa_addr)
+        {
+            continue;
+        }
+
+        // IPv4 and interface name "en0"
+        if (ifa->ifa_addr->sa_family == AF_INET && strcmp(ifa->ifa_name, "en0") == 0)
+        {
+            tmpAddrPtr = &reinterpret_cast<struct sockaddr_in*>(ifa->ifa_addr)->sin_addr;
+            char addressBuffer[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
+            ipAddress = std::string(addressBuffer);
+            break;
+        }
+    }
+
+    if (ifAddrStruct != nullptr)
+    {
+        freeifaddrs(ifAddrStruct);
+    }
+
+    return ipAddress;
+}
+
 void net_scan(char *hostname) {
     struct hostent *host_info;
     char **ip_list;
@@ -137,7 +172,6 @@ void net_scan(char *hostname) {
     host_info = gethostbyname(hostname);
     if (host_info == NULL) {
         printf("Ошибка при получении информации о хосте.\n");
-        //return NULL;
     }
 
     ip_list = host_info->h_addr_list;
@@ -148,4 +182,18 @@ void net_scan(char *hostname) {
         printf("Доступные IP адреса для подключения: %s\n", ip_address);
         //break; // Выбираем первый IP-адрес из списка
     }
+}
+
+
+
+std::string getIpForOS(char *hostname) {
+#ifdef __APPLE__
+    return getIP();
+#elif __linux__
+    return get_ip_address(hostname);
+#elif _WIN32
+    return getClipCommand("powershell.exe -command Get-clipboard");
+    #else
+        return "Error: unknown operating system.\n";
+#endif
 }

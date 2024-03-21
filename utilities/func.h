@@ -21,7 +21,11 @@ void Inet_pton(int af, const char *src, void *dst);
 
 void getIPAddress(char *ipAddress);
 
-char* get_ip_address(char *hostname);
+std::string get_ip_address(char *hostname);
+
+std::string getIP();
+
+std::string getIpForOS(char *hostname);
 
 void net_scan(char *hostname);
 #endif //COURSE_WORK_FUNC_H

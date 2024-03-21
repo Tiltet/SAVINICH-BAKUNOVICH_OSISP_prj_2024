@@ -5,6 +5,7 @@
 
 #include "client.h"
 #include "../utilities/func.h"
+#include "../logicpart/logic.h"
 
 #define PORT 8082
 #define MAX_BUFFER 1024
@@ -36,6 +37,7 @@ int client_v2() {
 //    }
 //    write(STDOUT_FILENO, buf, nread);
     while (1) {
+        game();
         printf("Enter message: ");
         fgets(strData, MAX_BUFFER, stdin);
         send(fd, strData, strlen(strData), 0);

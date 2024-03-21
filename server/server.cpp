@@ -73,7 +73,7 @@ bool server()
     return 0;
 }
 
-std::string getIP()
+std::string getIP_1()
 {
     std::string ipAddress;
     struct ifaddrs* ifAddrStruct = nullptr;
