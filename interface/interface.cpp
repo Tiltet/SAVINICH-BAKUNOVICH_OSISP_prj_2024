@@ -151,3 +151,43 @@ void interface()
         window.display();
     }
 }
+
+void drawGrid(sf::RenderWindow& window, bool check)
+{
+    sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
+    cell.setOutlineThickness(1.0f);
+    cell.setOutlineColor(sf::Color::Black);
+
+    sf::Color color1(175, 200, 225);   // Цвет ячейки 1
+    sf::Color color2(200, 225, 175);   // Цвет ячейки 2
+
+    for (int row = 0; row < gridSize; ++row)
+    {
+        for (int col = 0; col < gridSize; ++col)
+        {
+            int x = col * cellSize;
+            int y = row * cellSize;
+
+            if (check == true)
+            {
+                cell.setPosition(x, 360 - y);
+            }
+            else if (check == false)
+            {
+                cell.setPosition(1240 - x - cellSize, 360 - y);
+            }
+
+            // Чередуем цвета ячеек
+            if ((row + col) % 2 == 0)
+            {
+                cell.setFillColor(color1);
+            }
+            else
+            {
+                cell.setFillColor(color2);
+            }
+
+            window.draw(cell);
+        }
+    }
+}
