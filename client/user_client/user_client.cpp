@@ -49,6 +49,7 @@ int user_client() {
     printf("Подключено к серверу\n");
 
     while (1) {
+
         printf("Введите сообщение: ");
         fgets(message, BUFFER_SIZE, stdin);
 
