@@ -19,9 +19,9 @@ void Connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 
 void Inet_pton(int af, const char *src, void *dst);
 
-std::string getIpAddress(char *hostname);
+std::string getIPLinux(char *hostname);
 
-std::string getIP();
+std::string getIPMAC();
 
 std::string getIpForOS(char *hostname);
 

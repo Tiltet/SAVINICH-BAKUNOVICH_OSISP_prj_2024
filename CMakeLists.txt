@@ -4,16 +4,14 @@ project(Course_Work)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(SeaBattle main.cpp
-        server/server.cpp
         server/server.h
         client/client.h
-        client/client.cpp
-        server/server_v2.cpp
-        utilities/func.cpp
         utilities/func.h
-        client/client_v2.cpp
         logicpart/logic.cpp
         logicpart/logic.h
+        server/hosting/server_host_version.cpp
+        client/user_client/user_client.cpp
+        server/connection_funcs/con_funcs.cpp
         interface/interface.cpp
         logicpart/place/place.cpp
         logicpart/place/place.h
