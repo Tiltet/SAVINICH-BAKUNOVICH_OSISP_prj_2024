@@ -36,14 +36,14 @@ void logic() {
         }
     }
 
-   // int chs = 0;
-   // scanf("%d", &chs);
-   // printf("%d\n", chs);
-    //if (chs == 1) {
-    //place_ships_auto(board);
-   // } else {
+   int chs = 0;
+   scanf("%d", &chs);
+   printf("%d\n", chs);
+   if (chs == 1) {
+       place_ships_auto(board);
+   } else {
        place_ships(board);
-  //  }
+   }
     // Расстановка кораблей
     //place_ships(board);
 
@@ -64,13 +64,7 @@ void enterPlace(int *x, int *y) {
     printf("Please choose COLUMN number.\n");
     scanf("%d", y);
 }
-//int change(int arr[10][10], int x, int y) {
-//    if (x >= 0 && x < 10 && y >= 0 && y < 10) {
-//        arr[x][y] = 8; // Пример заполнения
-//    } else {
-//        printf("Координаты выходят за пределы массива.\n");
-//    }
-//}
+
 
 //void placeCheck(bool status, const int *row, int *col, int board[10][10], int count, int direction, int ship_length) {
 //    while (status != true) {
@@ -85,34 +79,24 @@ void enterPlace(int *x, int *y) {
 void place_ships_auto(int board[SIZE][SIZE]) {
     srand(time(NULL));
 
-    int shipSizes[10] = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1}; // Размеры кораблей
+    int shipSizes[SHIPS] = {4, 3, 2, 1}; // Размеры кораблей
 
-    int placedShips[10] = {0}; // Счетчик уже размещенных кораблей
-    int totalPlacedShips = 0; // Общее количество размещенных кораблей
+    for (int i = 0; i < SHIPS; i++) {
+        int shipSize = shipSizes[i];
+        int row, col, direction;
 
-    while (totalPlacedShips < 10) {
-        int shipIndex = rand() % 10; // Случайный индекс корабля
+        do {
+            row = rand() % SIZE;
+            col = rand() % SIZE;
+            direction = rand() % 2; // 0 - горизонтальное размещение, 1 - вертикальное размещение
+        } while (!isValidPlacement(board, row, col, direction, shipSize));
 
-        if (placedShips[shipIndex] == 0) {
-            int shipSize = shipSizes[shipIndex];
-            int row, col, direction;
-
-            do {
-                row = rand() % SIZE;
-                col = rand() % SIZE;
-                direction = rand() % 2; // 0 - горизонтальное размещение, 1 - вертикальное размещение
-            } while (!isValidPlacement(board, row, col, direction, shipSize));
-
-            for (int j = 0; j < shipSize; j++) {
-                if (direction == 0) {
-                    board[row][col + j] = 1; // Размещение корабля горизонтально
-                } else {
-                    board[row + j][col] = 1; // Размещение корабля вертикально
-                }
+        for (int j = 0; j < shipSize; j++) {
+            if (direction == 0) {
+                board[row][col + j] = 1; // Размещение корабля горизонтально
+            } else {
+                board[row + j][col] = 1; // Размещение корабля вертикально
             }
-
-            placedShips[shipIndex] = 1; // Пометить корабль как размещенный
-            totalPlacedShips++;
         }
     }
 }
@@ -130,17 +114,6 @@ int isValidPlacement(int board[SIZE][SIZE], int row, int col, int direction, int
                 return 0;
             }
         }
-
-        // Проверка наличия других кораблей в соседних клетках
-        for (int i = row - 1; i <= row + 1; i++) {
-            for (int j = col - 1; j < col + size + 1; j++) {
-                if (i >= 0 && i < SIZE && j >= 0 && j < SIZE) {
-                    if (board[i][j] == 1) {
-                        return 0;
-                    }
-                }
-            }
-        }
     } else {
         // Проверка, что корабль помещается в пределы доски по вертикали
         if (row + size > SIZE) {
@@ -153,18 +126,8 @@ int isValidPlacement(int board[SIZE][SIZE], int row, int col, int direction, int
                 return 0;
             }
         }
-
-        // Проверка наличия других кораблей в соседних клетках
-        for (int i = row - 1; i < row + size + 1; i++) {
-            for (int j = col - 1; j <= col + 1; j++) {
-                if (i >= 0 && i < SIZE && j >= 0 && j < SIZE) {
-                    if (board[i][j] == 1) {
-                        return 0;
-                    }
-                }
-            }
-        }
     }
+    return 1;
 }
 void place_ships(int board[SIZE][SIZE]) {
         int ship_type = 1, ship_length = 0, row = 0, col = 0, direction = 0, count = 0;
