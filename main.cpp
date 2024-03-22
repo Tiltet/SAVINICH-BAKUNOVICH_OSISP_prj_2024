@@ -5,11 +5,13 @@
 #include "client/client.h"
 #include "interface/interface.h"
 #include "logicpart/logic.h"
+#include "server/hosting/server_host_version.h"
+#include "client/user_client/user_client.h"
 
 
 int main(int argc, char *argv[])
 {
-    interface(); // начальная функция отрисовки интерфейса
+    //interface(); // начальная функция отрисовки интерфейса
 
     int option;
     int s_option = 0;
@@ -45,12 +47,12 @@ struct option long_options[] =
     if (s_option == 1)
     {
         std::cout << "Запускаем сервер..." << std::endl;
-        int num = server_v2();
+        int num = server_host();
         return num;
     }
     else if (c_option == 1)
     {
-        int num = client_v2();
+        int num = user_client();
         return num;
     }
     else
