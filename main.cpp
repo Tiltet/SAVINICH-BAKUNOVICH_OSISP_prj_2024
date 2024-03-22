@@ -7,6 +7,7 @@
 #include "logicpart/logic.h"
 #include "server/hosting/server_host_version.h"
 #include "client/user_client/user_client.h"
+#include "logicpart/place/place.h"
 
 
 int main(int argc, char *argv[])
@@ -60,5 +61,7 @@ struct option long_options[] =
         std::cerr << "Ошибка";
         return 1;
     }
+        logic();
+        //place();
 }
 
