@@ -40,6 +40,6 @@
 
 bool server();
 int server_v2();
-std::string getIP();
+//std::string getIP();
 
 #endif //COURSE_WORK_SERVER_H

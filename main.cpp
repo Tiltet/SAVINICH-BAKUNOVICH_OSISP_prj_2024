@@ -4,6 +4,8 @@
 #include "server/server.h"
 #include "client/client.h"
 #include "interface/interface.h"
+#include "logicpart/logic.h"
+
 
 int main(int argc, char *argv[])
 {

@@ -5,6 +5,7 @@
 
 #include "client.h"
 #include "../utilities/func.h"
+#include "../logicpart/logic.h"
 
 #define PORT 8082
 #define MAX_BUFFER 1024
@@ -23,18 +24,6 @@ int client_v2() {
 
     Inet_pton(AF_INET, adressIP.c_str(), &adr.sin_addr);
     Connect(fd, (struct sockaddr *) &adr, sizeof adr);
-//    write(fd, "Privet Timoxa\n", 15);
-//    char buf[256];
-//    ssize_t nread;
-//    nread = read(fd, buf, 256);
-//    if (nread == -1) {
-//        perror("read failed");
-//        exit(EXIT_FAILURE);
-//    }
-//    if (nread == 0) {
-//        printf("EOF occured\n");
-//    }
-//    write(STDOUT_FILENO, buf, nread);
     while (1) {
         printf("Enter message: ");
         fgets(strData, MAX_BUFFER, stdin);
@@ -47,7 +36,6 @@ int client_v2() {
         recv(fd, strData, MAX_BUFFER, 0);
         printf("Message: %s\n", strData);
     }
-    //sleep(10);
     close(fd);
     return 0;
 }

@@ -55,59 +55,59 @@ void Inet_pton(int af, const char *src, void *dst) {
     errorCatching(res, "inet_pton failure");
 }
 
-void getIPAddress(char *ipAddress) {
-    int sockfd;
-    struct ifreq ifr;
-    struct sockaddr_in *sin;
+//void getIPAddress(char *ipAddress) {
+//    int sockfd;
+//    struct ifreq ifr;
+//    struct sockaddr_in *sin;
+//
+//    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+//    if (sockfd < 0) {
+//        perror("Socket creation failed");
+//        exit(1);
+//    }
+//
+//    struct ifconf ifc;
+//    char buf[4096];
+//
+//    ifc.ifc_len = sizeof(buf);
+//    ifc.ifc_buf = buf;
+//
+//    if (ioctl(sockfd, SIOCGIFCONF, &ifc) == -1) {
+//        perror("Unable to get interface configuration");
+//        close(sockfd);
+//        exit(1);
+//    }
+//
+//    struct ifreq *ifrArray = (struct ifreq *)ifc.ifc_req;
+//    int numInterfaces = ifc.ifc_len / sizeof(struct ifreq);
+//
+//    int i;
+//    for (i = 0; i < numInterfaces; i++) {
+//        strncpy(ifr.ifr_name, ifrArray[i].ifr_name, IFNAMSIZ);
+//
+//        if (ioctl(sockfd, SIOCGIFFLAGS, &ifr) == 0) {
+//            if (ifr.ifr_flags & IFF_UP) {
+//                if (ioctl(sockfd, SIOCGIFADDR, &ifr) < 0) {
+//                    perror("Unable to get IP address");
+//                    close(sockfd);
+//                    exit(1);
+//                }
+//
+//                sin = (struct sockaddr_in *)&ifr.ifr_addr;
+//                strcpy(ipAddress, inet_ntoa(sin->sin_addr));
+//                break;
+//            }
+//        } else {
+//            perror("Unable to get interface flags");
+//            close(sockfd);
+//            exit(1);
+//        }
+//    }
+//
+//    close(sockfd);
+//}
 
-    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-    if (sockfd < 0) {
-        perror("Socket creation failed");
-        exit(1);
-    }
-
-    struct ifconf ifc;
-    char buf[4096];
-
-    ifc.ifc_len = sizeof(buf);
-    ifc.ifc_buf = buf;
-
-    if (ioctl(sockfd, SIOCGIFCONF, &ifc) == -1) {
-        perror("Unable to get interface configuration");
-        close(sockfd);
-        exit(1);
-    }
-
-    struct ifreq *ifrArray = (struct ifreq *)ifc.ifc_req;
-    int numInterfaces = ifc.ifc_len / sizeof(struct ifreq);
-
-    int i;
-    for (i = 0; i < numInterfaces; i++) {
-        strncpy(ifr.ifr_name, ifrArray[i].ifr_name, IFNAMSIZ);
-
-        if (ioctl(sockfd, SIOCGIFFLAGS, &ifr) == 0) {
-            if (ifr.ifr_flags & IFF_UP) {
-                if (ioctl(sockfd, SIOCGIFADDR, &ifr) < 0) {
-                    perror("Unable to get IP address");
-                    close(sockfd);
-                    exit(1);
-                }
-
-                sin = (struct sockaddr_in *)&ifr.ifr_addr;
-                strcpy(ipAddress, inet_ntoa(sin->sin_addr));
-                break;
-            }
-        } else {
-            perror("Unable to get interface flags");
-            close(sockfd);
-            exit(1);
-        }
-    }
-
-    close(sockfd);
-}
-
-char *get_ip_address(char *hostname) {
+std::string getIpAddress(char *hostname) {
     struct hostent *host_info;
     char **ip_list;
     char *ip_address = NULL;
@@ -129,6 +129,41 @@ char *get_ip_address(char *hostname) {
     return ip_address;
 }
 
+std::string getIP()
+{
+    std::string ipAddress;
+    struct ifaddrs* ifAddrStruct = nullptr;
+    struct ifaddrs* ifa = nullptr;
+    void* tmpAddrPtr = nullptr;
+
+    getifaddrs(&ifAddrStruct);
+
+    for (ifa = ifAddrStruct; ifa != nullptr; ifa = ifa->ifa_next)
+    {
+        if (!ifa->ifa_addr)
+        {
+            continue;
+        }
+
+        // IPv4 and interface name "en0"
+        if (ifa->ifa_addr->sa_family == AF_INET && strcmp(ifa->ifa_name, "en0") == 0)
+        {
+            tmpAddrPtr = &reinterpret_cast<struct sockaddr_in*>(ifa->ifa_addr)->sin_addr;
+            char addressBuffer[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
+            ipAddress = std::string(addressBuffer);
+            break;
+        }
+    }
+
+    if (ifAddrStruct != nullptr)
+    {
+        freeifaddrs(ifAddrStruct);
+    }
+
+    return ipAddress;
+}
+
 void net_scan(char *hostname) {
     struct hostent *host_info;
     char **ip_list;
@@ -137,7 +172,6 @@ void net_scan(char *hostname) {
     host_info = gethostbyname(hostname);
     if (host_info == NULL) {
         printf("Ошибка при получении информации о хосте.\n");
-        //return NULL;
     }
 
     ip_list = host_info->h_addr_list;
@@ -148,4 +182,14 @@ void net_scan(char *hostname) {
         printf("Доступные IP адреса для подключения: %s\n", ip_address);
         //break; // Выбираем первый IP-адрес из списка
     }
+}
+
+
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        std::string getIpForOS(char *hostname) {
+#ifdef __APPLE__
+    return getIP();
+#elif __linux__
+    return getIpAddress(hostname);
+#endif
 }
