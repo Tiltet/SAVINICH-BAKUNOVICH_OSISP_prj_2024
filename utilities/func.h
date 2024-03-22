@@ -25,5 +25,9 @@ std::string getIPMAC();
 
 std::string getIpForOS(char *hostname);
 
+void check_numb(int* size, int start, int end);
+
+void PrintBoard(const int board[10][10]);
+
 void net_scan(char *hostname);
 #endif //COURSE_WORK_FUNC_H
