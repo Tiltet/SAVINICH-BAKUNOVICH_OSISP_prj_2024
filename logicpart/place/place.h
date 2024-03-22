@@ -7,6 +7,7 @@
 
 
 void place(int board[10][10]);
+void displayBoard(int board[10][10]);
 
 
 #endif //COURSE_WORK_PLACE_H

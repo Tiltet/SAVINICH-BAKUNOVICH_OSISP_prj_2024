@@ -55,6 +55,16 @@ void Inet_pton(int af, const char *src, void *dst) {
     errorCatching(res, "inet_pton failure");
 }
 
+void PrintBoard(const int board[10][10]) {
+    std::cout << "Field:" << std::endl;
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            std::cout << board[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
 //void getIPAddress(char *ipAddress) {
 //    int sockfd;
 //    struct ifreq ifr;
@@ -192,4 +202,17 @@ void net_scan(char *hostname) {
 #elif __linux__
     return getIpAddress(hostname);
 #endif
+}
+
+void check_numb(int* size, int start, int end)
+{
+    long long a;
+    scanf("%lld", &a);
+    while (getchar() != '\n' || a < start || a > end || getchar() != ' ')
+    {
+        rewind(stdin);
+        printf("Error,try again\n");
+        scanf("%lld", &a);
+    }
+    *size = a;
 }

@@ -5,6 +5,7 @@
 #include "logic.h"
 #include <ctime>
 #include "place/place.h"
+#include "../utilities/func.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -13,21 +14,21 @@
 #define SIZE 10
 #define SHIPS 10
 
-//bool isShipsOverlap(int shipBoard[10][10], int startX, int startY, int dir, int length) {
-//    int i, j;
-//    for (i = 0; i < length; i++) {
-//        if (dir == 0) { // Вертикальное направление
-//            if (startY + i >= 10 || shipBoard[startX][startY + i] != '-') {
-//                return true; // Перекрытие или выход за границы
-//            }
-//        } else if (dir == 1) { // Горизонтальное направление
-//            if (startX + i >= 10 || shipBoard[startX + i][startY] != '-') {
-//                return true; // Перекрытие или выход за границы
-//            }
-//        }
-//    }
-//    return false; // Нет перекрытия
-//}
+bool isShipsOverlap(int shipBoard[10][10], int startX, int startY, int dir, int length) {
+    int i, j;
+    for (i = 0; i < length; i++) {
+        if (dir == 0) { // Вертикальное направление
+            if (startY + i >= 10 || shipBoard[startX][startY + i] != '-') {
+                return true; // Перекрытие или выход за границы
+            }
+        } else if (dir == 1) { // Горизонтальное направление
+            if (startX + i >= 10 || shipBoard[startX + i][startY] != '-') {
+                return true; // Перекрытие или выход за границы
+            }
+        }
+    }
+    return false; // Нет перекрытия
+}
 
 void logic() {
     int board[10][10] = {0};
@@ -46,9 +47,6 @@ void logic() {
    } else {
        place_ships(board);
    }
-    // Расстановка кораблей
-    //place_ships(board);
-
     // Вывод игрового поля (для демонстрации)
     printf("Your ground: \n");
     for (int i = 0; i < SIZE; i++) {
@@ -61,18 +59,7 @@ void logic() {
 
 
 
-void check_numb(int* size, int start, int end)
-{
-    long long a;
-    scanf("%lld", &a);
-    while (getchar() != '\n' || a < start || a > end || getchar() != ' ')
-    {
-        rewind(stdin);
-        printf("Error,try again\n");
-        scanf("%lld", &a);
-    }
-    *size = a;
-}
+
 
 //void check_numb(int *a, int start, int end) {
 //    char c;
@@ -248,4 +235,53 @@ void place_ships(int board[SIZE][SIZE]) {
                 printf("\n");
             }
         }
+}
+
+void game_initialisation(int *fl, int *chs, int board[SIZE][SIZE]) {
+    while(*fl != 1) {
+        printf("Enter numb:"
+               "1.Auto place"
+               "2.Manual place\n"
+               "3.Exit");
+        scanf("%d", chs);
+        check_numb(chs, 1, 3);
+        if (*chs == 0) {
+            place_ships(board);
+        } else if (*chs == 1) {
+            place(board);
+        } else {
+            printf("Exiting...\n");
+            exit(EXIT_SUCCESS);
+        }
+        printf("Your ground: \n");
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                printf("%d ", board[i][j]);
+            }
+            printf("\n");
+        }
+        printf("Are you ready to play ?"
+               "1.Yes"
+               "2.No");
+        scanf("%d", fl);
+        check_numb(fl, 1, 2);
+    }
+}
+
+void sendBoard(int clientSocket, int board[SIZE][SIZE]) {
+    // Отправка данных
+    int bytesSent = send(clientSocket, (const char*)board, sizeof(int) * SIZE * SIZE, 0);
+    if (bytesSent == -1) {
+        printf("Ошибка при отправке данных\n");
+        exit(1);
+    }
+}
+
+void receiveBoard(int clientSocket, int board[SIZE][SIZE]) {
+    // Прием данных
+    int bytesReceived = recv(clientSocket, (char*)board, sizeof(int) * SIZE * SIZE, 0);
+    if (bytesReceived == -1) {
+        printf("Ошибка при приеме данных\n");
+        exit(1);
+    }
 }

@@ -12,4 +12,7 @@ bool isShipsOverlap(int shipBoard[10][10], int startX, int startY, int dir, int 
 void enterPlace(int *x, int *y);
 void place_ships_auto(int board[10][10]);
 int isValidPlacement(int board[10][10], int row, int col, int direction, int size);
+void game_initialisation(int *fl, int *chs, int board[10][10]);
+void sendBoard(int clientSocket, int board[10][10]);
+void receiveBoard(int clientSocket, int board[10][10]);
 #endif //SAVINICH_BAKUNOVICH_OSISP_PRJ_2024_LOGIC_H

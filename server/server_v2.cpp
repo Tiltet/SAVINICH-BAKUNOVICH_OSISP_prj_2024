@@ -4,9 +4,12 @@
 #include "server.h"
 #include "../utilities/func.h"
 #include "../logicpart/logic.h"
+#include "../logicpart/place/place.h"
 
 #define PORT 8082
 #define MAX_BUFFER 1024
+#define SIZE 10
+
 
 void func(int connfd) {
     char buff[MAX_BUFFER];
@@ -28,35 +31,80 @@ void func(int connfd) {
 
 void* handle_client(void* arg) {
     int connfd = *(int*)arg;
-    char buffer[MAX_BUFFER];
-    int n;
 
-    while (1) {
-        // Получение сообщения от клиента
-        bzero(buffer, MAX_BUFFER);
-        n = read(connfd, buffer, MAX_BUFFER);
-        if (n > 0) {
-            printf("From client: %s\n", buffer);
+    int board_player1[SIZE][SIZE] = {
+            // Инициализируйте поле морского боя здесь или используйте вашу собственную логику
+    };
+
+    // Преобразование поля морского боя в строку
+    char board_str[SIZE * SIZE + 1];  // +1 для завершающего нулевого символа
+    int index = 0;
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            board_str[index++] = '0' + board_player1[i][j];  // Предполагая, что значения на поле могут быть от 0 до 9
         }
+    }
+    board_str[index] = '\0';  // Завершающий нулевой символ```cpp
+    // Отправка поля морского боя клиенту
+    send(connfd, board_str, SIZE * SIZE, 0);
+    char strData[MAX_BUFFER];
+    while (1) {
+        bzero(strData, MAX_BUFFER);
+        recv(connfd, strData, MAX_BUFFER, 0);
+        printf("Received message: %s\n", strData);
 
-        // Отправка сообщения клиенту
-        printf("Enter message to client: ");
-        fgets(buffer, MAX_BUFFER, stdin);
-        write(connfd, buffer, strlen(buffer));
+        // Обработка полученного сообщения
+        // ...
 
-        // Проверка на команду выхода
-        if (strncmp("exit", buffer, 4) == 0) {
+        // Отправка ответа клиенту
+        send(connfd, strData, strlen(strData), 0);
+
+        if (strncmp("exit", strData, 4) == 0) {
             printf("Server Exit...\n");
             break;
         }
     }
-
     close(connfd);
-    return NULL;
+    pthread_exit(NULL);
 }
 
 
 int server_v2() {
+    //Начало игрового процесса
+    int board_player1[SIZE][SIZE];
+    int chs = 0;
+    int fl = 0;
+    // while(fl != 1) {
+//        printf("Enter numb:\n"
+//               "1.Auto place\n"
+//               "2.Manual place\n"
+//               "3.Exit\n");
+//        scanf("%d", chs);
+//        check_numb(&chs, 1, 3);
+//        if (chs == 0) {
+//            place_ships(board_player1);
+//        } else if (chs == 1) {
+//            place(board_player1);
+//        } else {
+//            printf("Exiting...\n");
+//            exit(EXIT_SUCCESS);
+//        }
+    place(board_player1);
+    printf("Your ground: \n");
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            printf("%d ", board_player1[i][j]);
+        }
+        printf("\n");
+    }
+//        printf("Are you ready to play ?\n"
+//               "1.Yes\n"
+//               "2.No\n");
+//        scanf("%d", fl);
+    //check_numb(&fl, 1, 2);
+    //}
+
+
     int socket = Socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in adr, cli = {0};
 
@@ -67,7 +115,7 @@ int server_v2() {
     adr.sin_port = htons(PORT);
     adr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    Bind(socket, (struct sockaddr*) &adr, sizeof adr);
+    Bind(socket, (struct sockaddr *) &adr, sizeof adr);
     Listen(socket, 1);
 
     net_scan(hostname);
@@ -76,15 +124,20 @@ int server_v2() {
     std::cout << "IP игры - " << getIpForOS(hostname) << std::endl;
     std::cout << "Ожидание подключения клиента..." << std::endl;
 
-    while (1) {
-        socklen_t len = sizeof(cli);
-        int fd = Accept(socket, (struct sockaddr *) &cli, &len);
-        if (fd < 0) {
-            printf("Server accept failed...\n");
-            exit(0);
-        }
-        pthread_t thread_id;
-        pthread_create(&thread_id, NULL, handle_client, &fd);
-    }
-}
 
+
+    while (1) {
+        struct sockaddr_in cliaddr = {0};
+        socklen_t clilen = sizeof(cliaddr);
+        int connfd = accept(socket, (struct sockaddr*)&cliaddr, &clilen);
+        if (connfd < 0) {
+            perror("Accepting failed");
+            exit(EXIT_FAILURE);
+        }
+
+        pthread_t tid;
+        pthread_create(&tid, NULL, handle_client, &connfd);
+    }
+
+    return 0;
+}
