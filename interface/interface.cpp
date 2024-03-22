@@ -4,12 +4,34 @@
 
 #include <SFML/Graphics.hpp>
 #include "interface.h"
+#include "../logicpart/place/place.h"
 
 const int gridSize = 10;
 const int cellSize = 45;
 
 // 1240 - ширина
 // 720 - высота
+
+// Функция отрисовки кораблей
+void drawShips(std::vector<std::vector<Cell>>& mapUser)
+{
+    int map[gridSize][gridSize] = {0};
+
+    place(map);
+
+    for (int row = 0; row < gridSize; ++row)
+    {
+        for (int col = 0; col < gridSize; ++col)
+        {
+            std::cout << map[row][col] <<  " ";
+            if (map[row][col] == 1)
+            {
+                mapUser[row][col].shape.setFillColor(sf::Color::Red);
+            }
+        }
+        std::cout << std::endl;
+    }
+}
 
 // Функция, котрая отрисовывает игровые
 void drawMap(sf::RenderWindow& window, const std::vector<std::vector<Cell>>& map)
@@ -125,6 +147,8 @@ void interface()
             cell.shape.setPosition(col * cellSize + 740, row * cellSize + 120);
         }
     }
+
+    drawShips(mapUser);
 
     // Главный цикл приложения
     while (window.isOpen())

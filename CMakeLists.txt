@@ -16,6 +16,7 @@ add_executable(SeaBattle main.cpp
         logicpart/logic.h
         interface/interface.cpp
         logicpart/place/place.cpp
+        logicpart/place/place.h
 )
 
 include_directories(/usr/local/include)

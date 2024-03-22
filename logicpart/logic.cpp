@@ -13,21 +13,21 @@
 #define SIZE 10
 #define SHIPS 10
 
-//bool isShipsOverlap(int shipBoard[10][10], int startX, int startY, int dir, int length) {
-//    int i, j;
-//    for (i = 0; i < length; i++) {
-//        if (dir == 0) { // Вертикальное направление
-//            if (startY + i >= 10 || shipBoard[startX][startY + i] != '-') {
-//                return true; // Перекрытие или выход за границы
-//            }
-//        } else if (dir == 1) { // Горизонтальное направление
-//            if (startX + i >= 10 || shipBoard[startX + i][startY] != '-') {
-//                return true; // Перекрытие или выход за границы
-//            }
-//        }
-//    }
-//    return false; // Нет перекрытия
-//}
+bool isShipsOverlap(int shipBoard[10][10], int startX, int startY, int dir, int length) {
+    int i, j;
+    for (i = 0; i < length; i++) {
+        if (dir == 0) { // Вертикальное направление
+            if (startY + i >= 10 || shipBoard[startX][startY + i] != '-') {
+                return true; // Перекрытие или выход за границы
+            }
+        } else if (dir == 1) { // Горизонтальное направление
+            if (startX + i >= 10 || shipBoard[startX + i][startY] != '-') {
+                return true; // Перекрытие или выход за границы
+                }
+        }
+    }
+    return false; // Нет перекрытия
+}
 
 void logic() {
     int board[10][10] = {0};
