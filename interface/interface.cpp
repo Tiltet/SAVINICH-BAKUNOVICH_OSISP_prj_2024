@@ -189,10 +189,17 @@ void interfaceTest()
     unsigned int screenWidth = desktopMode.width;
     unsigned int screenHeight = desktopMode.height;
 
+    #if defined(__APPLE__)
+        screenWidth = screenWidth / 2 + 5;
+        screenHeight = screenHeight / 2 + 5;
+        std::cout << screenWidth << screenHeight;
+    #endif
+
+
     sf::RenderWindow window(desktopMode, "Sea Battle", sf::Style::Fullscreen);
     window.setMouseCursorVisible(false);
 
-    sf::RectangleShape background(sf::Vector2f(screenWidth / 2, screenHeight / 2 + 20));
+    sf::RectangleShape background(sf::Vector2f(screenWidth, screenHeight));
     sf::Texture texture_window_background1;
     if (!texture_window_background1.loadFromFile("../interface/img/background.jpg"))
     {
@@ -201,7 +208,7 @@ void interfaceTest()
 
     background.setTexture(&texture_window_background1);
 
-    game::GameMenu menu(720, 148);
+    game::GameMenu menu(screenWidth / 2, screenHeight / 5);
 
     menu.loadFont("../interface/fonts/Boomboom.otf");
     menu.setTitle("Sea Battle", 144, sf::Color::White);
