@@ -60,36 +60,36 @@ void logic() {
 
 
 
-void check_numb(int* size, int start, int end)
-{
-    long long a;
-    scanf("%lld", &a);
-    while (getchar() != '\n' || a < start || a > end || getchar() != ' ')
-    {
-        rewind(stdin);
-        printf("Error,try again\n");
-        scanf("%lld", &a);
-    }
-    *size = a;
-}
-
-//void check_numb(int *a, int start, int end) {
-//    char c;
-//    while (1) {
-//        if (scanf("%d", &a) == 1) {
-//            if (*a >= start && *a <= end) {
-//                break; // Ввод корректен, выходим из цикла
-//            } else {
-//                printf("Число выходит за пределы от 0 до 9. Попробуйте еще раз: ");
-//            }
-//        } else {
-//            // Очистка буфера ввода
-//            while ((c = getchar()) != '\n' && c != EOF) { }
-//            printf("Введенное значение не является числом. Попробуйте еще раз: ");
-//        }
+//void check_numb(int* size, int start, int end)
+//{
+//    long long a;
+//    scanf("%lld", &a);
+//    while (getchar() != '\n' || a < start || a > end || getchar() != ' ')
+//    {
+//        rewind(stdin);
+//        printf("Error,try again\n");
+//        scanf("%lld", &a);
 //    }
-//
+//    *size = a;
 //}
+
+void check_numb(int *a, int start, int end) {
+    char c;
+    while (1) {
+        if (scanf("%d", &a) == 1) {
+            if (*a >= start && *a <= end) {
+                break; // Ввод корректен, выходим из цикла
+            } else {
+                printf("Число выходит за пределы от 0 до 9. Попробуйте еще раз: ");
+            }
+        } else {
+            // Очистка буфера ввода
+            while ((c = getchar()) != '\n' && c != EOF) { }
+            printf("Введенное значение не является числом. Попробуйте еще раз: ");
+        }
+    }
+
+}
 
 void enterPlace(int *x, int *y) {
     printf("Please choose ROW number.\n");

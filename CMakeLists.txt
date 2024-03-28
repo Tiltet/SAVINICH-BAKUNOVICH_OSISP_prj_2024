@@ -13,6 +13,10 @@ add_executable(SeaBattle main.cpp
         interface/interface.cpp
         logicpart/place/place.cpp
         logicpart/place/place.h
+        server/hosting/server_host_version.cpp
+        server/server_v3.cpp
+        server/server_v3.h
+        client/client_v3.cpp
 )
 
 include_directories(/usr/local/include)
