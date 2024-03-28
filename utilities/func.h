@@ -19,15 +19,6 @@ void Connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 
 void Inet_pton(int af, const char *src, void *dst);
 
-std::string getIPLinux(char *hostname);
+void getIPAddress(char *ipAddress);
 
-std::string getIPMAC();
-
-std::string getIpForOS(char *hostname);
-
-void check_numb(int* size, int start, int end);
-
-void PrintBoard(const int board[10][10]);
-
-void net_scan(char *hostname);
 #endif //COURSE_WORK_FUNC_H

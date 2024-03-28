@@ -1,7 +1,6 @@
 #include <iostream>
 #include <getopt.h>
 
-#include "server/server.h"
 #include "client/client.h"
 #include "interface/interface.h"
 #include "logicpart/logic.h"

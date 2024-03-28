@@ -29,8 +29,12 @@ void *handle_client(void *arg) {
         memset(buffer, '\0', sizeof(buffer));
 
         // Принимаем данные от клиента
-        if (recv(socket, buffer, sizeof(buffer), 0) < 0) {
-            perror("Не удалось принять данные от клиента");
+        ssize_t received = recv(socket, buffer, sizeof(buffer), 0);
+        if (received < 0) {
+            perror("Ошибка получения данных от клиента");
+            break;
+        } else if (received == 0) {
+            printf("Клиент отключен: %s:%d\n", client_address, ntohs(address.sin_port));
             break;
         }
 
@@ -47,8 +51,6 @@ void *handle_client(void *arg) {
     // Закрываем сокет клиента
     close(socket);
     free(client);
-    printf("Клиент %s:%d отключен\n", client_address, ntohs(address.sin_port));
-
     pthread_exit(NULL);
 }
 

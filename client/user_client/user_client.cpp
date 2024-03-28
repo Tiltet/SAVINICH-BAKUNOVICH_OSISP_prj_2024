@@ -69,7 +69,9 @@ int user_client() {
     }
 
     // Закрытие сокета
+    // Закрытие сокета
     close(socket_desc);
+    printf("Сокет закрыт\n");
 
     return 0;
 }

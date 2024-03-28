@@ -7,7 +7,6 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
-
 #include <optional>
 
 // Класс с координатми выстрела

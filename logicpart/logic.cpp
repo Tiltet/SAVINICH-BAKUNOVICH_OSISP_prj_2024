@@ -1,7 +1,6 @@
 //
 // Created by nikitabakunovich on 20.03.24.
 //
-#include "../server/server.h"
 #include "logic.h"
 #include <ctime>
 #include "place/place.h"
