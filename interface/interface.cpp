@@ -4,9 +4,9 @@
 
 #include <SFML/Graphics.hpp>
 #include "interface.h"
-#include "../logicpart/place/place.h"
 #include "menuWindow/menu.h"
 #include "preparationWindow/preparation.h"
+#include "../logicpart/place/place.h"
 
 const int gridSize = 10;
 const int cellSize = 45;
@@ -185,9 +185,14 @@ void interface()
 
 void interfaceTest()
 {
-    sf::RenderWindow window(sf::VideoMode(1088, 896), "Sea Battle");
+    sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
+    unsigned int screenWidth = desktopMode.width;
+    unsigned int screenHeight = desktopMode.height;
+
+    sf::RenderWindow window(desktopMode, "Sea Battle", sf::Style::Fullscreen);
     window.setMouseCursorVisible(false);
-    sf::RectangleShape background(sf::Vector2f(1088, 896));
+
+    sf::RectangleShape background(sf::Vector2f(screenWidth / 2, screenHeight / 2 + 20));
     sf::Texture texture_window_background1;
     if (!texture_window_background1.loadFromFile("../interface/img/background.jpg"))
     {
@@ -196,7 +201,7 @@ void interfaceTest()
 
     background.setTexture(&texture_window_background1);
 
-    game::GameMenu menu(544, 148);
+    game::GameMenu menu(720, 148);
 
     menu.loadFont("../interface/fonts/Boomboom.otf");
     menu.setTitle("Sea Battle", 144, sf::Color::White);
@@ -258,14 +263,9 @@ void interfaceTest()
             menu.draw(window);
             window.display();
         }
-        else if (check == 1)
-        {
-            pre::Preparation preparation(window, background);
-        }
         else
         {
-            window.clear();
-            window.display();
+            pre::Preparation preparation(window, background);
         }
     }
 }

@@ -14,6 +14,7 @@ namespace pre
     {
     private:
 
+
     public:
         explicit Preparation(sf::RenderWindow& window, sf::RectangleShape background);
     };
