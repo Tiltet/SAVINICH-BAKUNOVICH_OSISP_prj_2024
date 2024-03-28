@@ -19,6 +19,8 @@ add_executable(SeaBattle main.cpp
         interface/menuWindow/menu.cpp
         interface/preparationWindow/preparation.cpp
         interface/preparationWindow/preparation.h
+        interface/global/global.cpp
+        interface/global/global.h
 )
 
 include_directories(/usr/local/include)

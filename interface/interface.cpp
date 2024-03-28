@@ -6,13 +6,12 @@
 #include "interface.h"
 #include "menuWindow/menu.h"
 #include "preparationWindow/preparation.h"
+#include "global/global.h"
 #include "../logicpart/place/place.h"
 
 const int gridSize = 10;
 const int cellSize = 45;
 
-// 1240 - ширина
-// 720 - высота
 
 // Функция отрисовки кораблей
 void drawShips(std::vector<std::vector<Cell>>& mapUser)
@@ -174,32 +173,23 @@ void interface()
             }
         }
 
-
         window.clear();
         window.draw(background);
-        // drawMap(window, mapUser);   // функции отрисовки полей: передаем поле, в функции отрисовываем в соответствии со всеми параметрами
-        // drawMap(window, mapEnemy);
+        drawMap(window, mapUser);   // функции отрисовки полей: передаем поле, в функции отрисовываем в соответствии со всеми параметрами
+        drawMap(window, mapEnemy);
         window.display();
     }
 }
 
 void interfaceTest()
 {
-    sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
-    unsigned int screenWidth = desktopMode.width;
-    unsigned int screenHeight = desktopMode.height;
+    setGlobalFont();
+    setGlobalScreenSize();
 
-    #if defined(__APPLE__)
-        screenWidth = screenWidth / 2 + 5;
-        screenHeight = screenHeight / 2 + 5;
-        std::cout << screenWidth << screenHeight;
-    #endif
-
-
-    sf::RenderWindow window(desktopMode, "Sea Battle", sf::Style::Fullscreen);
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Sea Battle", sf::Style::Fullscreen);
     window.setMouseCursorVisible(false);
 
-    sf::RectangleShape background(sf::Vector2f(screenWidth, screenHeight));
+    sf::RectangleShape background(sf::Vector2f(globalScreenWigth, globalScreenHeight));
     sf::Texture texture_window_background1;
     if (!texture_window_background1.loadFromFile("../interface/img/background.jpg"))
     {
@@ -208,16 +198,13 @@ void interfaceTest()
 
     background.setTexture(&texture_window_background1);
 
-    game::GameMenu menu(screenWidth / 2, screenHeight / 5);
+    game::GameMenu menu(globalScreenWigth / 2, globalScreenWigth / 10);
 
-    menu.loadFont("../interface/fonts/Boomboom.otf");
     menu.setTitle("Sea Battle", 144, sf::Color::White);
-
     menu.addItem("Classic", 86, sf::Color::White);
     menu.addItem("Fun Mode", 86, sf::Color::White);
     menu.addItem("Exit", 86, sf::Color::White);
     menu.alignMenu(3);
-
 
     int check = 0;
 
@@ -270,9 +257,14 @@ void interfaceTest()
             menu.draw(window);
             window.display();
         }
+        else if (check == 1)
+        {
+            pre::Preparation preparation(window, background, game::GameMenu(globalScreenWigth / 5, globalScreenHeight / 5));
+        }
         else
         {
-            pre::Preparation preparation(window, background);
+            window.close();
+            interface();
         }
     }
 }

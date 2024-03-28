@@ -12,14 +12,6 @@ game::GameMenu::GameMenu(float x, float y)
     this->padding = 0;
 }
 
-void game::GameMenu::loadFont(const std::string &fontPath)
-{
-    if (!font.loadFromFile(fontPath))
-    {
-        return;
-    }
-}
-
 void game::GameMenu::setTitle(const std::string &title, int characterSize, const sf::Color &color)
 {
     titleText.setFont(font);

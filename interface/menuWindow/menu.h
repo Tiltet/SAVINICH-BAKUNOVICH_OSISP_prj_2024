@@ -4,6 +4,7 @@
 
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "../global/global.h"
 
 #ifndef COURSE_WORK_MENU_H
 #define COURSE_WORK_MENU_H
@@ -16,13 +17,12 @@ namespace game
         float menu_Y;
         int selectedItemIndex;
         float padding;
-        sf::Font font;
+        sf::Font font = globalFont;
         sf::Text titleText;
         std::vector<sf::Text> menuItems;
 
     public:
         GameMenu(float x, float y);
-        void loadFont(const std::string& fontPath);
         void setTitle(const std::string& title, int characterSize, const sf::Color& color);
         void draw(sf::RenderWindow& window);
         void addItem(const std::string& itemText, int characterSize, const sf::Color& color);
