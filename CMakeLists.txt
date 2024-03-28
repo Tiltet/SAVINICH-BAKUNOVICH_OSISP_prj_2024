@@ -15,6 +15,10 @@ add_executable(SeaBattle main.cpp
         interface/interface.cpp
         logicpart/place/place.cpp
         logicpart/place/place.h
+        interface/menuWindow/menu.h
+        interface/menuWindow/menu.cpp
+        interface/preparationWindow/preparation.cpp
+        interface/preparationWindow/preparation.h
 )
 
 include_directories(/usr/local/include)

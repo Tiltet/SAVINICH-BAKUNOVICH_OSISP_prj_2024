@@ -5,6 +5,8 @@
 #include <SFML/Graphics.hpp>
 #include "interface.h"
 #include "../logicpart/place/place.h"
+#include "menuWindow/menu.h"
+#include "preparationWindow/preparation.h"
 
 const int gridSize = 10;
 const int cellSize = 45;
@@ -110,7 +112,10 @@ ShootCoordinates shoot(sf::RenderWindow& window, std::vector<std::vector<Cell>>&
 // ОСНОВНАЯ ФУНКЦИЯ ИНТЕРФЕЙСА
 void interface()
 {
-    sf::RenderWindow window(sf::VideoMode(1240, 720), "Sea Battle", sf::Style::Titlebar | sf::Style::Close);
+    sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
+    sf::RenderWindow window(desktopMode, "Resizable Window Example", sf::Style::Default);
+
+
     sf::RectangleShape background(sf::Vector2f(window.getSize().x, window.getSize().y));
     background.setFillColor(sf::Color(154, 215, 254));
 
@@ -172,8 +177,95 @@ void interface()
 
         window.clear();
         window.draw(background);
-        drawMap(window, mapUser);   // функции отрисовки полей: передаем поле, в функции отрисовываем в соответствии со всеми параметрами
-        drawMap(window, mapEnemy);
+        // drawMap(window, mapUser);   // функции отрисовки полей: передаем поле, в функции отрисовываем в соответствии со всеми параметрами
+        // drawMap(window, mapEnemy);
         window.display();
+    }
+}
+
+void interfaceTest()
+{
+    sf::RenderWindow window(sf::VideoMode(1088, 896), "Sea Battle");
+    window.setMouseCursorVisible(false);
+    sf::RectangleShape background(sf::Vector2f(1088, 896));
+    sf::Texture texture_window_background1;
+    if (!texture_window_background1.loadFromFile("../interface/img/background.jpg"))
+    {
+        return;
+    }
+
+    background.setTexture(&texture_window_background1);
+
+    game::GameMenu menu(544, 148);
+
+    menu.loadFont("../interface/fonts/Boomboom.otf");
+    menu.setTitle("Sea Battle", 144, sf::Color::White);
+
+    menu.addItem("Classic", 86, sf::Color::White);
+    menu.addItem("Fun Mode", 86, sf::Color::White);
+    menu.addItem("Exit", 86, sf::Color::White);
+    menu.alignMenu(3);
+
+
+    int check = 0;
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+            }
+            else if (event.type == sf::Event::KeyPressed)
+            {
+                if (event.key.code == sf::Keyboard::Up)
+                {
+                    menu.moveUp();
+                }
+                else if (event.key.code == sf::Keyboard::Down)
+                {
+                    menu.moveDown();
+                }
+                else if (event.key.code == sf::Keyboard::Return)
+                {
+                    int selectedItemIndex = menu.getSelectedItemIndex();
+                    switch (selectedItemIndex)
+                    {
+                        case 0:
+                            std::cout << "Start Classic Mode" << std::endl;
+                            check = 1;
+                            break;
+                        case 1:
+                            std::cout << "Start Fun Mode" << std::endl;
+                            break;
+                        case 2:
+                            std::cout << "Exit" << std::endl;
+                            window.close();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
+        if (check == 0)
+        {
+            window.clear();
+            window.draw(background);
+            menu.draw(window);
+            window.display();
+        }
+        else if (check == 1)
+        {
+            pre::Preparation preparation(window, background);
+        }
+        else
+        {
+            window.clear();
+            window.display();
+        }
     }
 }

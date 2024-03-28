@@ -1,8 +1,6 @@
 #include <iostream>
 #include <getopt.h>
 
-#include "server/server.h"
-#include "client/client.h"
 #include "interface/interface.h"
 #include "logicpart/logic.h"
 #include "server/hosting/server_host_version.h"
@@ -12,7 +10,8 @@
 
 int main(int argc, char *argv[])
 {
-    //interface(); // начальная функция отрисовки интерфейса
+    // interface();
+    interfaceTest(); // начальная функция отрисовки интерфейса
 
     int option;
     int s_option = 0;
@@ -61,7 +60,7 @@ struct option long_options[] =
         std::cerr << "Ошибка";
         return 1;
     }
-        logic();
-        //place();
+        // logic();
+        // place();
 }
 

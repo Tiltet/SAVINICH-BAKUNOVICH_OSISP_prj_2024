@@ -40,5 +40,6 @@ struct Cell
 void interface();
 ShootCoordinates shoot(sf::RenderWindow& window, std::vector<std::vector<Cell>>& map);
 void drawMap(sf::RenderWindow& window, const std::vector<std::vector<Cell>>& map);
+void interfaceTest();
 
 #endif //COURSE_WORK_INTERFACE_H
