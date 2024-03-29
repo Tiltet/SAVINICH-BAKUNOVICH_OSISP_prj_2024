@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 #define SERVER_IP "127.0.0.1"
-#define PORT 8081
+#define PORT 8082
 
 int server_v3() {
     int server_socket, client_sockets[2];

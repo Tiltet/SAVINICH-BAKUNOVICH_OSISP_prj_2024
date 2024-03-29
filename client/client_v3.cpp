@@ -7,7 +7,7 @@
 #include "../logicpart/logic.h"
 
 #define SERVER_IP "127.0.0.1"
-#define PORT 8081
+#define PORT 8082
 
 int client() {
     int client_socket;
@@ -47,7 +47,7 @@ int client() {
         }
 
         printf("Received from server: %s\n", buffer);
-
+        memset(buffer, 0, sizeof(buffer));
         // Take input from the player
         printf("Enter your move: ");
         //fgets(buffer, sizeof(buffer), stdin);

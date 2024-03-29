@@ -76,23 +76,23 @@ void logic() {
 //    *size = a;
 //}
 
-void check_numb(int *a, int start, int end) {
-    char c;
-    while (1) {
-        if (scanf("%d", &a) == 1) {
-            if (*a >= start && *a <= end) {
-                break; // Ввод корректен, выходим из цикла
-            } else {
-                printf("Число выходит за пределы от 0 до 9. Попробуйте еще раз: ");
-            }
-        } else {
-            // Очистка буфера ввода
-            while ((c = getchar()) != '\n' && c != EOF) { }
-            printf("Введенное значение не является числом. Попробуйте еще раз: ");
-        }
-    }
-
-}
+//void check_numb(int *a, int start, int end) {
+//    char c;
+//    while (1) {
+//        if (scanf("%d", &a) == 1) {
+//            if (*a >= start && *a <= end) {
+//                break; // Ввод корректен, выходим из цикла
+//            } else {
+//                printf("Число выходит за пределы от 0 до 9. Попробуйте еще раз: ");
+//            }
+//        } else {
+//            // Очистка буфера ввода
+//            while ((c = getchar()) != '\n' && c != EOF) { }
+//            printf("Введенное значение не является числом. Попробуйте еще раз: ");
+//        }
+//    }
+//
+//}
 
 void enterPlace(int *x, int *y) {
     printf("Please choose ROW number.\n");
@@ -252,19 +252,36 @@ void place_ships(int board[SIZE][SIZE]) {
         }
 }
 
+void check_numb(int *a, int start, int end) {
+    int result;
+    while (1) {
+        result = scanf("%d", a);
+        if (result == 1 && *a >= start && *a <= end) {
+            break; // Ввод корректен, выходим из цикла
+        } else {
+            printf("Число выходит за пределы от %d до %d. Попробуйте еще раз: ", start, end);
+            // Очистка буфера ввода
+            while (getchar() != '\n');
+        }
+    }
+}
+
 void sendShotCoordinates(int client_socket) {
     char buffer[BUFFER_SIZE];
     int x, y;
-
     // Запрашиваем координаты выстрела у пользователя
-    printf("Введите координаты выстрела (x,y): ");
-    scanf("%d,%d", &x, &y);
+    printf("Введите координаты выстрела (x): ");
+    //scanf("%d", &x);
+    check_numb(&x, 1, 10);
+    printf("Введите координаты выстрела (y): ");
+    //scanf("%d", &y);
+    check_numb(&y, 1, 10);
 
-    // Проверяем, что координаты входят в допустимые пределы поля 10x10
-    if (x < 0 || x > 9 || y < 0 || y > 9) {
-        printf("Координаты выстрела должны быть в пределах от 0 до 9.\n");
-        sendShotCoordinates(client_socket);
-    }
+//    // Проверяем, что координаты входят в допустимые пределы поля 10x10
+//    if (x < 0 || x > 9 || y < 0 || y > 9) {
+//        printf("Координаты выстрела должны быть в пределах от 0 до 9.\n");
+//        sendShotCoordinates(client_socket);
+//    }
 
     // Формируем сообщение с координатами выстрела
     snprintf(buffer, BUFFER_SIZE, "%d,%d", x, y);
@@ -277,3 +294,4 @@ void sendShotCoordinates(int client_socket) {
         printf("Выстрел отправлен на сервер.\n");
     }
 }
+
