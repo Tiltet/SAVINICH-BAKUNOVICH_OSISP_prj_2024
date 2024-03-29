@@ -7,10 +7,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <cstring>
+#include <sys/socket.h>
 
 
 #define SIZE 10
 #define SHIPS 10
+#define BUFFER_SIZE 1024
 
 bool isShipsOverlap(int shipBoard[10][10], int startX, int startY, int dir, int length) {
     int i, j;
@@ -247,4 +250,30 @@ void place_ships(int board[SIZE][SIZE]) {
                 printf("\n");
             }
         }
+}
+
+void sendShotCoordinates(int client_socket) {
+    char buffer[BUFFER_SIZE];
+    int x, y;
+
+    // Запрашиваем координаты выстрела у пользователя
+    printf("Введите координаты выстрела (x,y): ");
+    scanf("%d,%d", &x, &y);
+
+    // Проверяем, что координаты входят в допустимые пределы поля 10x10
+    if (x < 0 || x > 9 || y < 0 || y > 9) {
+        printf("Координаты выстрела должны быть в пределах от 0 до 9.\n");
+        sendShotCoordinates(client_socket);
+    }
+
+    // Формируем сообщение с координатами выстрела
+    snprintf(buffer, BUFFER_SIZE, "%d,%d", x, y);
+
+    // Отправляем сообщение на сервер
+    ssize_t sent = send(client_socket, buffer, strlen(buffer), 0);
+    if (sent < 0) {
+        perror("Ошибка при отправке данных на сервер");
+    } else {
+        printf("Выстрел отправлен на сервер.\n");
+    }
 }
