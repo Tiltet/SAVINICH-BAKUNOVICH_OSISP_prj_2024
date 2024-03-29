@@ -1,4 +1,5 @@
 #include "user_client.h"
+#include "../../logicpart/place/place.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,6 +18,7 @@ int user_client() {
     struct sockaddr_in serverAddress;
     char message[BUFFER_SIZE], server_reply[BUFFER_SIZE];
     char ip_address[16];
+    char buffer[BUFFER_SIZE] = {0};
 
     // Создание сокета
     socket_desc = socket(AF_INET, SOCK_STREAM, 0);
@@ -48,24 +50,18 @@ int user_client() {
 
     printf("Подключено к серверу\n");
 
-    while (1) {
-        printf("Введите сообщение: ");
-        fgets(message, BUFFER_SIZE, stdin);
+    // Инициализация игровых данных
+    char coordinates[10];
+    printf("Введите координаты хода (x,y): ");
+    fgets(coordinates, sizeof(coordinates), stdin);
+    send(socket_desc, coordinates, strlen(coordinates), 0);
 
-        // Отправка данных на сервер
-        if (send(socket_desc, message, strlen(message), 0) < 0) {
-            perror("Не удалось отправить данные");
-            return 1;
-        }
-
-        // Получение ответа от сервера
-        if (recv(socket_desc, server_reply, BUFFER_SIZE, 0) < 0) {
-            perror("Не удалось получить данные от сервера");
-            break;
-        }
-
-        printf("Ответ сервера: %s\n", server_reply);
+    // Получение хода другого игрока
+    int n = recv(socket_desc, buffer, BUFFER_SIZE, 0);
+    if (n > 0) {
+        printf("Ход другого игрока: %s\n", buffer);
     }
+
 
     // Закрытие сокета
     close(socket_desc);

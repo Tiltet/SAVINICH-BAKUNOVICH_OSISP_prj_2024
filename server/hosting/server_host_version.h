@@ -6,5 +6,5 @@
 #define COURSE_WORK_SERVER_HOST_VERSION_H
 
 int server_host();
-void *handle_client(void *arg);
+void *handle_client_v2(void *arg);
 #endif //COURSE_WORK_SERVER_HOST_VERSION_H
