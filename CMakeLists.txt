@@ -13,6 +13,12 @@ add_executable(SeaBattle main.cpp
         interface/interface.cpp
         logicpart/place/place.cpp
         logicpart/place/place.h
+        interface/menuWindow/menu.h
+        interface/menuWindow/menu.cpp
+        interface/preparationWindow/preparation.cpp
+        interface/preparationWindow/preparation.h
+        interface/global/global.cpp
+        interface/global/global.h
         server/hosting/server_host_version.cpp
         server/server_v3.cpp
         server/server_v3.h
