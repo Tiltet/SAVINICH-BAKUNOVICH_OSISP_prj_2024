@@ -238,6 +238,8 @@ void interfaceTest()
                             break;
                         case 1:
                             std::cout << "Start Fun Mode" << std::endl;
+                            window.close();
+                            interface();
                             break;
                         case 2:
                             std::cout << "Exit" << std::endl;
