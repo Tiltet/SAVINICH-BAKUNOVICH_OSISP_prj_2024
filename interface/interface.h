@@ -6,7 +6,11 @@
 #define COURSE_WORK_INTERFACE_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
+#include "global/global.h"
+#include "menuBlock/menu.h"
+#include "preparationWindow/preparation.h"
 
 #include <optional>
 
@@ -21,25 +25,9 @@ struct ShootCoordinates
 
 // #TODO
 // Класс информации о поле
-enum class CellState
-{
-    Empty,
-    Ship,
-    Hit,
-    Miss
-};
 
-
-// Класс поля
-struct Cell
-{
-    CellState state;
-    sf::RectangleShape shape;
-};
-
-void interface();
+// void interface();
 ShootCoordinates shoot(sf::RenderWindow& window, std::vector<std::vector<Cell>>& map);
-void drawMap(sf::RenderWindow& window, const std::vector<std::vector<Cell>>& map);
 void interfaceTest();
 
 #endif //COURSE_WORK_INTERFACE_H

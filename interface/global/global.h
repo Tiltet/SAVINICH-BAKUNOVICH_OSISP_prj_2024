@@ -7,6 +7,22 @@
 
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "../global/global.h"
+
+enum class CellState
+{
+    Empty,
+    Ship,
+    Hit,
+    Miss
+};
+
+
+struct Cell
+{
+    CellState state;
+    sf::RectangleShape shape;
+};
 
 extern sf::Font globalFont;
 extern unsigned int globalScreenWigth;

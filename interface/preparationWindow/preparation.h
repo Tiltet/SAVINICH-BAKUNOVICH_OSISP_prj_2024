@@ -4,8 +4,10 @@
 
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "../menuWindow/menu.h"
+#include "../menuBlock/menu.h"
 #include "../../logicpart/place/place.h"
+#include "../gameWindow/game.h"
+#include "../global/global.h"
 #include "iostream"
 
 #ifndef COURSE_WORK_PREPARATION_H
@@ -13,33 +15,18 @@
 
 namespace pre
 {
-    enum class CellState
-    {
-        Empty,
-        Ship,
-        Hit,
-        Miss
-    };
-
-
-    struct Cell
-    {
-        CellState state;
-        sf::RectangleShape shape;
-    };
-
     class Preparation
     {
     private:
-        game::GameMenu gameMenu;
+        menu::Menu gameMenu;
         std::vector<std::vector<Cell>> map;
 
     public:
-        explicit Preparation(sf::RenderWindow &window, sf::RectangleShape background, game::GameMenu gameMenu);
+        explicit Preparation(sf::RenderWindow &window, sf::RectangleShape background, menu::Menu gameMenu);
         void initMap();
         void clearMap();
         void drawMap(sf::RenderWindow& window);
-        static void drawShips(std::vector<std::vector<pre::Cell>>& mapUser);
+        static void drawShips(std::vector<std::vector<Cell>>& mapUser);
     };
 }
 

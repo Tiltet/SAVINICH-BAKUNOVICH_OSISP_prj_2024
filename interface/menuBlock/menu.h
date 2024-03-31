@@ -9,9 +9,9 @@
 #ifndef COURSE_WORK_MENU_H
 #define COURSE_WORK_MENU_H
 
-namespace game
+namespace menu
 {
-    class GameMenu {
+    class Menu {
     private:
         float menu_X;
         float menu_Y;
@@ -22,7 +22,7 @@ namespace game
         std::vector<sf::Text> menuItems;
 
     public:
-        GameMenu(float x, float y);
+        Menu(float x, float y);
         void setTitle(const std::string& title, int characterSize, const sf::Color& color);
         void draw(sf::RenderWindow& window);
         void addItem(const std::string& itemText, int characterSize, const sf::Color& color);

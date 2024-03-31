@@ -4,7 +4,7 @@
 
 #include "preparation.h"
 
-pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape background, game::GameMenu gameMenu) : gameMenu(std::move(gameMenu))
+pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape background, menu::Menu gameMenu) : gameMenu(std::move(gameMenu))
 {
     this->gameMenu.setTitle("Menu", 144, sf::Color::White);
     this->gameMenu.addItem("Auto", 86, sf::Color::White);
@@ -53,21 +53,28 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
                             std::cout << "Auto" << std::endl;
                             clearMap();
                             drawShips(this->map);
-                            check = 1;
+                            check = 0;
                             break;
                         case 1:
-                            std::cout << "Start Fun Mode" << std::endl;
-                            check = 2;
+                            //TODO Manual
+                            std::cout << "Manual" << std::endl;
+                            check = 1;
                             break;
-                        case 3:
-                            std::cout << "Exit" << std::endl;
-                            window.close();
+                        case 2:
+                            std::cout << "Start" << std::endl;
+                            check = 2;
                             break;
                         default:
                             break;
                     }
                 }
             }
+        }
+
+        if (check == 2)
+        {
+            game::Game(window, background, this->map);
+            window.close();
         }
 
         window.clear();
@@ -127,7 +134,7 @@ void pre::Preparation::drawMap(sf::RenderWindow &window)
     }
 }
 
-void pre::Preparation::drawShips(std::vector<std::vector<pre::Cell>> &mapUser)
+void pre::Preparation::drawShips(std::vector<std::vector<Cell>> &mapUser)
 {
     int map[10][10] = {0};
 
