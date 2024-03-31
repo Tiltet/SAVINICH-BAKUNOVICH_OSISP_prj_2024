@@ -7,18 +7,39 @@
 #include <pthread.h>
 
 #define PORT 8082
-#define MAX_CLIENTS 5
+#define MAX_CLIENTS 2
 #define BUFFER_SIZE 2000
+
+int currentPlayer = 0;
 
 struct client_info {
     int socket;
     struct sockaddr_in address;
 };
 
-void *handle_client(void *arg) {
+void handleClient(int client_socket) {
+    char buffer[BUFFER_SIZE];
+    int n;
+
+    while (1) {
+        n = recv(client_socket, buffer, BUFFER_SIZE, 0);
+        if (n > 0) {
+            printf("Получено сообщение от клиента %d: %s\n", currentPlayer, buffer);
+            // Переключение на другого игрока
+            currentPlayer = 1 - currentPlayer;
+            // Пересылка сообщения другому клиенту
+            send(client_socket, buffer, n, 0);
+        } else {
+            break;
+        }
+    }
+}
+
+void *handle_client_v2(void *arg) {
     char buffer[BUFFER_SIZE];
     struct client_info *client = (struct client_info *)arg;
     int socket = client->socket;
+    int new_socket;
     struct sockaddr_in address = client->address;
     char client_address[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(address.sin_addr), client_address, INET_ADDRSTRLEN);
@@ -29,8 +50,12 @@ void *handle_client(void *arg) {
         memset(buffer, '\0', sizeof(buffer));
 
         // Принимаем данные от клиента
-        if (recv(socket, buffer, sizeof(buffer), 0) < 0) {
-            perror("Не удалось принять данные от клиента");
+        ssize_t received = recv(socket, buffer, sizeof(buffer), 0);
+        if (received < 0) {
+            perror("Ошибка получения данных от клиента");
+            break;
+        } else if (received == 0) {
+            printf("Клиент отключен: %s:%d\n", client_address, ntohs(address.sin_port));
             break;
         }
 
@@ -47,16 +72,15 @@ void *handle_client(void *arg) {
     // Закрываем сокет клиента
     close(socket);
     free(client);
-    printf("Клиент %s:%d отключен\n", client_address, ntohs(address.sin_port));
-
     pthread_exit(NULL);
 }
 
 int server_host() {
-    int socket_desc, client_sock, c;
+    int socket_desc, client_sock, c, new_socket;
     struct sockaddr_in server, client;
     pthread_t thread_id;
     struct client_info *client_info_ptr;
+    int addrlen = sizeof(server);
 
     // Создание сокета
     socket_desc = socket(AF_INET, SOCK_STREAM, 0);
@@ -83,25 +107,26 @@ int server_host() {
 
     printf("Ожидание подключения клиентов...\n");
 
-    c = sizeof(struct sockaddr_in);
-    while ((client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t *)&c))) {
-        client_info_ptr = (struct client_info *)malloc(sizeof(struct client_info));
-        client_info_ptr->socket = client_sock;
-        client_info_ptr->address = client;
-
-        // Создание нового потока для обработки клиента
-        if (pthread_create(&thread_id, NULL, handle_client, (void *)client_info_ptr) < 0) {
-            perror("Не удалось создать поток для клиента");
-            return 1;
+    int client_sockets[MAX_CLIENTS];
+    int client_count = 0;
+    while (client_count < MAX_CLIENTS) {
+        if ((new_socket = accept(socket_desc, (struct sockaddr *)&server, (socklen_t*)&addrlen)) < 0) {
+            perror("accept");
+            exit(EXIT_FAILURE);
         }
 
-        // Освобождение ресурсов потока
-        pthread_detach(thread_id);
+        client_sockets[client_count] = new_socket;
+        client_count++;
     }
 
-    if (client_sock < 0) {
-        perror("Не удалось принять соединение");
-        return 1;
+    // Обработка клиентов
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        handleClient(client_sockets[i]);
+    }
+
+    // Закрытие сокетов
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        close(client_sockets[i]);
     }
 
     return 0;

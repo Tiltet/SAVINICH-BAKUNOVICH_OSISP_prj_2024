@@ -1,11 +1,13 @@
 #include <iostream>
 #include <getopt.h>
 
+
 #include "interface/interface.h"
 // #include "logicpart/logic.h"
 #include "server/hosting/server_host_version.h"
 #include "client/user_client/user_client.h"
 #include "logicpart/place/place.h"
+#include "server/server_v3.h"
 
 
 int main(int argc, char *argv[])
@@ -47,12 +49,12 @@ struct option long_options[] =
     if (s_option == 1)
     {
         std::cout << "Запускаем сервер..." << std::endl;
-        int num = server_host();
+        int num = server_v3();
         return num;
     }
     else if (c_option == 1)
     {
-        int num = user_client();
+        int num = client();
         return num;
     }
     else
@@ -60,7 +62,5 @@ struct option long_options[] =
         std::cerr << "Ошибка";
         return 1;
     }
-        // logic();
-        // place();
 }
 
