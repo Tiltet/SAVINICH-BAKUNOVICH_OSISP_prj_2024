@@ -3,6 +3,7 @@
 //
 
 #include "preparation.h"
+#include "../../client/client.h"
 
 pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape background, menu::Menu gameMenu) : gameMenu(std::move(gameMenu))
 {
@@ -73,6 +74,27 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
 
         if (check == 2)
         {
+
+            int map[10][10] = {0};
+            for (int row = 0; row < 10; ++row)
+            {
+                for (int col = 0; col < 10; ++col)
+                {
+                    Cell& cell = this->map[row][col];
+                    if (cell.state == CellState::Empty)
+                    {
+                        map[row][col] = 0;
+                    }
+                    else if (cell.state == CellState::Ship)
+                    {
+                        map[row][col] = 1;
+                    }
+                    std::cout << map[row][col] << " ";
+                }
+                std::cout << "\n";
+            }
+
+
             game::Game(window, background, this->map);
             window.close();
         }
@@ -147,6 +169,7 @@ void pre::Preparation::drawShips(std::vector<std::vector<Cell>> &mapUser)
             if (map[row][col] == 1)
             {
                 mapUser[row][col].shape.setFillColor(sf::Color::Red);
+                mapUser[row][col].state = CellState::Ship;
             }
         }
     }

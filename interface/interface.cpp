@@ -106,7 +106,6 @@ void interfaceTest()
         else
         {
             window.close();
-            // interface();
         }
     }
 }
