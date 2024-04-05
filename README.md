@@ -12,4 +12,3 @@
 >This is why you need to program.
 >
 Savinich Timofey
-
