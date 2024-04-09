@@ -37,7 +37,6 @@ namespace game
         void initMapEnemy();
         void drawMaps(sf::RenderWindow& window);
         ShootCoordinates shoot(sf::RenderWindow& window);
-
     };
 
 

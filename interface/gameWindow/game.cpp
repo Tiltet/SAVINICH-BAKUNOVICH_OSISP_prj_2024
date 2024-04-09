@@ -85,6 +85,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
     //sf::SoundBuffer soundBuffer;
 //    if (!soundBuffer.loadFromFile("../interface/sounds/bam2.mp3"))
 //    {
+
 //        return;
 //    }
 
