@@ -32,6 +32,6 @@ include_directories(/usr/local/include)
 #путь к папке с SFML на Fedora39
 set(CMAKE_PREFIX_PATH "/home/lib64/cmake/SFML" ${CMAKE_PREFIX_PATH})
 
-find_package(SFML 2.5 COMPONENTS system window graphics audio network REQUIRED)
+find_package(SFML 2.5 COMPONENTS system window graphics network REQUIRED)
 include_directories(${SFML_INCLUDE_DIRS})
-target_link_libraries(SeaBattle sfml-system sfml-window sfml-audio sfml-graphics sfml-network)
+target_link_libraries(SeaBattle sfml-system sfml-window sfml-graphics sfml-network)

@@ -8,6 +8,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <optional>
 #include "iostream"
 #include "../preparationWindow/preparation.h"
 #include "../../logicpart/logic.h"
@@ -26,12 +27,20 @@ namespace game
         int number{};
         std::vector<std::vector<Cell>> mapUser;
         std::vector<std::vector<Cell>> mapEnemy;
+        int client_socket;
+
+        void sendShootData(int x, int y);
+        std::pair<int, int> receiveServerResponse();
+
     public:
         explicit Game(sf::RenderWindow &window, sf::RectangleShape background, std::vector<std::vector<Cell>> map);
         void initMapEnemy();
         void drawMaps(sf::RenderWindow& window);
         ShootCoordinates shoot(sf::RenderWindow& window);
+
     };
+
+
 }
 
 #endif //COURSE_WORK_GAME_H

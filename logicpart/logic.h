@@ -5,7 +5,7 @@
 #ifndef SAVINICH_BAKUNOVICH_OSISP_PRJ_2024_LOGIC_H
 #define SAVINICH_BAKUNOVICH_OSISP_PRJ_2024_LOGIC_H
 
-void game();
+ //void game();
 void place_ships(int board[10][10]);
 void logic();
 bool isShipsOverlap(int shipBoard[10][10], int startX, int startY, int dir, int length);

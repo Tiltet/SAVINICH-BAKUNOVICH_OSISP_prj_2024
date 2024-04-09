@@ -54,8 +54,8 @@ struct option long_options[] =
     }
     else if (c_option == 1)
     {
-        int num = client();
-        return num;
+        interfaceTest();
+        return -1;
     }
     else
     {
