@@ -19,17 +19,7 @@ void game::Game::sendShootData(int x, int y) {
     }
 }
 
-std::pair<int, int> game::Game::receiveServerResponse()  {
-//    char buffer[1024];
-//    memset(buffer, 0, sizeof(buffer));
-//    if (recv(client_socket, buffer, sizeof(buffer) - 1, 0) < 0) {
-//        perror("Failed to receive server response");
-//    } else {
-//        std::cout << "Server response: " << buffer << std::endl;
-//        // Здесь вы можете обработать ответ от сервера, например, обновить состояние игры
-//        Cell& cell = this->mapEnemy[];
-//    }
-
+std::pair<int, int> game::Game::receiveServerResponse() {
     char buffer[1024];
     memset(buffer, 0, sizeof(buffer));
     if (recv(client_socket, buffer, sizeof(buffer) - 1, 0) < 0) {
@@ -48,8 +38,20 @@ std::pair<int, int> game::Game::receiveServerResponse()  {
             int y = std::stoi(yStr);
 
             // ЗАКРАСИЛ КЛЕТОЧКУ
-            Cell &cell = this->mapEnemy[x][y];
-            cell.shape.setFillColor(sf::Color::Red);
+            Cell &cell = this->mapUser[x][y];
+
+            if (cell.state == CellState::Ship)
+            {
+                std::cout << "Попал" << std::endl;
+                cell.shape.setFillColor(sf::Color::Black);
+                cell.state = CellState::Hit;
+            }
+            else if (cell.state == CellState::Empty)
+            {
+                std::cout << "Мимо" << std::endl;
+                cell.shape.setFillColor(sf::Color::Yellow);
+                cell.state = CellState::Hit;
+            }
 
             return {x, y};
         } else {
@@ -62,6 +64,11 @@ std::pair<int, int> game::Game::receiveServerResponse()  {
 
 game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::vector<std::vector<Cell>> map)
 {
+    char ip_address[16];
+    printf("Enter the IP address: ");
+    fgets(ip_address, sizeof(ip_address), stdin);
+    ip_address[strcspn(ip_address, "\n")] = '\0';
+
     std::cout << "Game" << std::endl;
     this->mapUser = std::move(map);
 
@@ -97,10 +104,11 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
 //        perror("Failed to create client socket");
 //    }
 
+
     struct sockaddr_in server_address;
     server_address.sin_family = AF_INET;
     server_address.sin_port = htons(PORT);
-    if (inet_pton(AF_INET, SERVER_IP, &(server_address.sin_addr)) <= 0) {
+    if (inet_pton(AF_INET, ip_address, &(server_address.sin_addr)) <= 0) {
         perror("Failed to convert server IP address");
     }
 

@@ -36,8 +36,9 @@ int client() {
     }
 
     printf("Connected to the server.\n");
-
+    // interfaceTest();
     while (1) {
+
         memset(buffer, 0, sizeof(buffer));
 
         // Wait for the player's turn
@@ -50,9 +51,9 @@ int client() {
         memset(buffer, 0, sizeof(buffer));
         // Take input from the player
         printf("Enter your move: ");
-        //fgets(buffer, sizeof(buffer), stdin);
-        //Отправка координат выстрела
-        sendShotCoordinates(client_socket);
+        // fgets(buffer, sizeof(buffer), stdin);
+        // Отправка координат выстрела
+        // sendShotCoordinates(client_socket);
 
         // Send the move to the server
         ssize_t sent = send(client_socket, buffer, strlen(buffer), 0);

@@ -2,10 +2,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
+#include "server_v3.h"
+#include "connection_funcs/con_funcs.h"
+#include <stdio.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <ifaddrs.h>
+#include <netinet/in.h>
+#include <net/if.h>
+#include <netinet/in.h>
+#include <netdb.h>
 
-#define SERVER_IP "127.0.0.1"
+#include <netinet/if_ether.h>
+
+
+//#define SERVER_IP "172.20.10.15"
 #define PORT 8082
 
 int server_v3() {
@@ -39,6 +50,11 @@ int server_v3() {
         return 1;
     }
 
+    char hostname[1024];
+    gethostname(hostname, sizeof(hostname));
+    //net_scan(hostname);
+    std::cout << "IP игры - " << getIpForOS(hostname) << std::endl;
+    std::cout << "Ожидание подключения клиента..." << std::endl;
     printf("Waiting for clients to connect...\n");
 
     // Принятие соединений от двух клиентов
@@ -54,7 +70,7 @@ int server_v3() {
     // Основной цикл игры
     while (1) {
         // Отправка сигнала текущему игроку о начале его хода
-        send(client_sockets[current_player], "Your turn", 9, 0);
+        send(client_sockets[current_player], buffer, sizeof(buffer), 0);
 
         // Получение хода от текущего игрока
         memset(buffer, 0, sizeof(buffer));
