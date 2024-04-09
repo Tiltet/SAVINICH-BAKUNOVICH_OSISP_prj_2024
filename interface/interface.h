@@ -6,7 +6,7 @@
 #define COURSE_WORK_INTERFACE_H
 
 #include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
+//#include <SFML/Audio.hpp>
 #include <iostream>
 #include "global/global.h"
 #include "menuBlock/menu.h"

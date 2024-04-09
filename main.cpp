@@ -4,6 +4,7 @@
 
 #include "interface/interface.h"
 // #include "logicpart/logic.h"
+#include "client/client.h"
 #include "server/hosting/server_host_version.h"
 #include "client/user_client/user_client.h"
 #include "logicpart/place/place.h"
@@ -12,9 +13,7 @@
 
 int main(int argc, char *argv[])
 {
-    // interface();
     interfaceTest(); // начальная функция отрисовки интерфейса
-
     int option;
     int s_option = 0;
     int c_option = 0;
@@ -54,8 +53,8 @@ struct option long_options[] =
     }
     else if (c_option == 1)
     {
-        int num = client();
-        return num;
+        interfaceTest();
+        return -1;
     }
     else
     {

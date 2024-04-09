@@ -3,13 +3,72 @@
 //
 
 #include "game.h"
+#include "../../client/client.h"
 #include <utility>
+
+#define SERVER_IP "127.0.0.1"
+#define PORT 8082
 
 const int gridSize = 10;
 const int cellSize = 60;
 
+void game::Game::sendShootData(int x, int y) {
+    std::string message = std::to_string(x) + "," + std::to_string(y) + "\n";
+    if (send(client_socket, message.c_str(), message.size(), 0) < 0) {
+        perror("Failed to send shoot data to the server");
+    }
+}
+
+std::pair<int, int> game::Game::receiveServerResponse() {
+    char buffer[1024];
+    memset(buffer, 0, sizeof(buffer));
+    if (recv(client_socket, buffer, sizeof(buffer) - 1, 0) < 0) {
+        perror("Failed to receive server response");
+        return {-1, -1}; // Возвращаем пару (-1, -1) в случае ошибки
+    } else {
+        std::cout << "Server response: " << buffer << std::endl;
+        // Разбиваем полученную строку на две части по запятой
+        std::string response(buffer);
+        size_t pos = response.find(',');
+        if (pos != std::string::npos) {
+            std::string xStr = response.substr(0, pos);
+            std::string yStr = response.substr(pos + 1);
+            // Преобразуем строки в целые числа
+            int x = std::stoi(xStr);
+            int y = std::stoi(yStr);
+
+            // ЗАКРАСИЛ КЛЕТОЧКУ
+            Cell &cell = this->mapUser[x][y];
+
+            if (cell.state == CellState::Ship)
+            {
+                std::cout << "Попал" << std::endl;
+                cell.shape.setFillColor(sf::Color::Black);
+                cell.state = CellState::Hit;
+            }
+            else if (cell.state == CellState::Empty)
+            {
+                std::cout << "Мимо" << std::endl;
+                cell.shape.setFillColor(sf::Color::Yellow);
+                cell.state = CellState::Hit;
+            }
+
+            return {x, y};
+        } else {
+            // Если формат ответа не соответствует ожидаемому, возвращаем пару (-1, -1)
+            return {-1, -1};
+        }
+    }
+}
+
+
 game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::vector<std::vector<Cell>> map)
 {
+    char ip_address[16];
+    printf("Enter the IP address: ");
+    fgets(ip_address, sizeof(ip_address), stdin);
+    ip_address[strcspn(ip_address, "\n")] = '\0';
+
     std::cout << "Game" << std::endl;
     this->mapUser = std::move(map);
 
@@ -24,15 +83,40 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
     background.setTexture(&texture_window_background1);
     initMapEnemy();
 
-    sf::SoundBuffer soundBuffer;
-    if (!soundBuffer.loadFromFile("../interface/sounds/bam2.mp3"))
-    {
-        return;
+    // Create client socket
+    this->client_socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (client_socket == -1) {
+        perror("Failed to create client socket");
     }
 
-    sf::Sound sound;
-    sound.setBuffer(soundBuffer);
+    //sf::SoundBuffer soundBuffer;
+//    if (!soundBuffer.loadFromFile("../interface/sounds/bam2.mp3"))
+//    {
 
+//        return;
+//    }
+
+//    sf::Sound sound;
+//    sound.setBuffer(soundBuffer);
+//    // Создание сокета и подключение к серверу
+//    client_socket = socket(AF_INET, SOCK_STREAM, 0);
+//    if (client_socket == -1) {
+//        perror("Failed to create client socket");
+//    }
+
+
+    struct sockaddr_in server_address;
+    server_address.sin_family = AF_INET;
+    server_address.sin_port = htons(PORT);
+    if (inet_pton(AF_INET, ip_address, &(server_address.sin_addr)) <= 0) {
+        perror("Failed to convert server IP address");
+    }
+
+    if (connect(client_socket, (struct sockaddr *)&server_address, sizeof(server_address)) < 0) {
+        perror("Failed to connect to the server");
+    }
+
+    printf("Connected to the server.\n");
     while (window.isOpen())
     {
         sf::Event event;
@@ -48,7 +132,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                 {
 
                     shoot(window);
-                    sound.play();
+                    //sound.play();
                 }
             }
         }
@@ -145,6 +229,19 @@ game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window)
     else
     {
         std::cout << "Неправильные координат\n";
+    }
+    int x = *coordinates.x;
+    int y = *coordinates.y;
+    sendShootData(x, y);
+
+    // Получаем ответ от сервера
+    auto serverResponse = receiveServerResponse();
+    if (serverResponse.first != -1 && serverResponse.second != -1) {
+        // Обработка полученных координат
+        std::cout << "Received coordinates from server: " << serverResponse.first << ", " << serverResponse.second << std::endl;
+        // Здесь вы можете добавить логику обработки координат, полученных от сервера
+    } else {
+        std::cout << "Failed to parse server response." << std::endl;
     }
 
     return coordinates;

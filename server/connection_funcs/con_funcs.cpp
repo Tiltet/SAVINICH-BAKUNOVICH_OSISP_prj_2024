@@ -127,10 +127,10 @@ std::string getIPMAC()
 }
 
 
-void getIpForOS(char* hostname) {
+std::string getIpForOS(char* hostname) {
 #   ifdef __APPLE__
-    getIPMAC();
+    return getIPMAC();
 #   elif __linux__
-    getIPLinux(hostname);
+    return getIPLinux(hostname);
 #   endif
 }

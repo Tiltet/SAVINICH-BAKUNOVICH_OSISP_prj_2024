@@ -266,9 +266,8 @@ void check_numb(int *a, int start, int end) {
     }
 }
 
-void sendShotCoordinates(int client_socket) {
+void sendShotCoordinates(int client_socket, int x, int y) {
     char buffer[BUFFER_SIZE];
-    int x, y;
     // Запрашиваем координаты выстрела у пользователя
     printf("Введите координаты выстрела (x): ");
     //scanf("%d", &x);
