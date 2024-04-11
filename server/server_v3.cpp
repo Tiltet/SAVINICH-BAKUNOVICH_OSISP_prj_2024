@@ -2,22 +2,26 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
-#include "server_v3.h"
+#include <netinet/in.h>
+#include <unistd.h>
+#include <iostream>
 #include "connection_funcs/con_funcs.h"
-#include <stdio.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <ifaddrs.h>
-#include <netinet/in.h>
-#include <net/if.h>
-#include <netinet/in.h>
-#include <netdb.h>
 
-#include <netinet/if_ether.h>
-
-
-//#define SERVER_IP "172.20.10.15"
 #define PORT 8082
+
+// Функция для определения победителя
+//char* determineWinner(const char* player1, const char* player2) {
+//    if (strcmp(player1, player2) == 0) {
+//        return "It's a tie!";
+//    }
+//    if ((strcmp(player1, "rock") == 0 && strcmp(player2, "scissors") == 0) ||
+//        (strcmp(player1, "paper") == 0 && strcmp(player2, "rock") == 0) ||
+//        (strcmp(player1, "scissors") == 0 && strcmp(player2, "paper") == 0)) {
+//        return "Player 1 wins!";
+//    } else {
+//        return "Player 2 wins!";
+//    }
+//}
 
 int server_v3() {
     int server_socket, client_sockets[2];
@@ -50,6 +54,7 @@ int server_v3() {
         return 1;
     }
 
+    printf("Waiting for clients to connect...\n");
     char hostname[1024];
     gethostname(hostname, sizeof(hostname));
     //net_scan(hostname);
@@ -70,7 +75,8 @@ int server_v3() {
     // Основной цикл игры
     while (1) {
         // Отправка сигнала текущему игроку о начале его хода
-        send(client_sockets[current_player], buffer, sizeof(buffer), 0);
+        sprintf(buffer, "Your turn, player %d\n", current_player + 1);
+        send(client_sockets[current_player], buffer, strlen(buffer), 0);
 
         // Получение хода от текущего игрока
         memset(buffer, 0, sizeof(buffer));
@@ -82,6 +88,23 @@ int server_v3() {
 
         // Переключение на другого игрока
         current_player = 1 - current_player;
+
+        // Получение хода от второго игрока
+        memset(buffer, 0, sizeof(buffer));
+        if (recv(client_sockets[current_player], buffer, sizeof(buffer), 0) <= 0) {
+            perror("Failed to receive data from the client");
+            break;
+        }
+        printf("Received from client %d: %s\n", current_player + 1, buffer);
+
+        // Определение победителя
+        //char* winner = determineWinner(buffer, buffer);
+        //printf("%s\n", winner);
+
+        // Отправка сообщения о победителе
+        //sprintf(buffer, "%s\n", winner);
+        send(client_sockets[current_player], buffer, strlen(buffer), 0);
+        send(client_sockets[1 - current_player], buffer, strlen(buffer), 0);
     }
 
     // Закрытие сокетов
@@ -92,3 +115,5 @@ int server_v3() {
 
     return 0;
 }
+
+
