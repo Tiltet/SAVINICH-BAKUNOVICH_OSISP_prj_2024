@@ -113,16 +113,18 @@ int server_host() {
         while (1) {
 
             if (currentPlayer == 0) {
-                //send_message_s(player1Socket, "Your turn. Enter coordinates: ");
                 receive_message_s(player1Socket, buffer);
                 printf("Player 1's turn: %s\n", buffer); // Для отладки
                 send_message_s(player2Socket, buffer);
+                receive_message_s(player2Socket, buffer);
+                send_message_s(player1Socket, buffer);
                 currentPlayer = 1 - currentPlayer;
             } else {
-                //send_message_s(player2Socket, "Your turn. Enter coordinates: ");
                 receive_message_s(player2Socket, buffer);
                 printf("Player 2's turn: %s\n", buffer); // Для отладки
                 send_message_s(player1Socket, buffer);
+                receive_message_s(player1Socket, buffer);
+                send_message_s(player2Socket, buffer);
                 currentPlayer = 1 - currentPlayer;
             }
         }

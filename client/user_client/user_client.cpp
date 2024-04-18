@@ -5,6 +5,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <ctime>
+#include <cctype>
 
 #define BUFFER_SIZE 1024
 
@@ -24,6 +25,17 @@ void receive_message(int socket, char* buffer) {
     buffer[bytesReceived] = '\0';
 }
 
+void init_ships(char board[10][10]) {
+    // Генерация случайного расположения кораблей
+    srand(time(NULL));
+    int i, j;
+    for (i = 0; i < 10; i++) {
+        for (j = 0; j < 10; j++) {
+            board[i][j] = '-';
+        }
+    }
+}
+
 void auto_place_ships(char board[10][10]) {
     // Генерация случайного расположения кораблей
     srand(time(NULL));
@@ -40,26 +52,55 @@ void auto_place_ships(char board[10][10]) {
     }
 }
 
-void print_board(char board[10][10]) {
+void print_board(char playerBoard[10][10], char enemyBoard[10][10]) {
     int i, j;
-    printf("   ");
-    for (i = 0; i < 10; i++) {
-        printf("%d ", i);
-    }
-    printf("\n");
+
+    printf("   A B C D E F G H I J");
+    printf("     ");
+    printf("   A B C D E F G H I J\n");
+
     for (i = 0; i < 10; i++) {
         printf("%d  ", i);
         for (j = 0; j < 10; j++) {
-            printf("%c ", board[i][j]);
+            printf("%c ", playerBoard[i][j]);
+        }
+        printf("    ");
+        printf("%d  ", i);
+        for (j = 0; j < 10; j++) {
+            printf("%c ", enemyBoard[i][j]);
         }
         printf("\n");
     }
+}
+
+bool is_valid_coordinate(const char* coordinate) {
+    if (coordinate[0] < 'A' || coordinate[0] > 'J')
+        return false;
+
+    if (coordinate[1] < '0' || coordinate[1] > '9')
+        return false;
+
+    return true;
+}
+
+bool parse_shot(const char* shot, int* x, int* y) {
+    if (shot[0] < 'A' || shot[0] > 'J')
+        return false;
+
+    if (shot[1] < '0' || shot[1] > '9')
+        return false;
+
+    *x = shot[0] - 'A';
+    *y = shot[1] - '0';
+
+    return true;
 }
 
 int user_client() {
     int clientSocket;
     struct sockaddr_in serverAddress;
     char buffer[BUFFER_SIZE];
+    int x, y;
 
     // Создание сокета
     clientSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -85,31 +126,50 @@ int user_client() {
     printf("%s\n", buffer);
 
     char player1Board[10][10];
+    char player2Board[10][10];
     auto_place_ships(player1Board);
+    init_ships(player2Board);
     printf("Your board: \n");
-    print_board(player1Board);
+    print_board(player1Board, player2Board);
 
     // Игровой цикл
     while (1) {
-        // Получение результата хода
-        //receive_message(clientSocket, buffer);
-        //printf("%s\n", buffer);
 
         // Ход игрока
         printf("Your turn: ");
         fgets(buffer, BUFFER_SIZE, stdin);
+        while (!is_valid_coordinate(buffer)) {
+            printf("Введенные координаты являются недопустимыми.\n", buffer);
+            fgets(buffer, BUFFER_SIZE, stdin);
+            buffer[0] = toupper(buffer[0]);
+        }
+        //parse_shot(buffer, &x, &y);
+        //player2Board[y][x] = '0';
         buffer[strcspn(buffer, "\n")] = '\0';
         send_message(clientSocket, buffer);
-
-        // Проверка на завершение игры
-//        if (strcmp(buffer, "Game over!") == 0) {
-//            break;
-//        }
 
         // Ожидание хода противника
         printf("Waiting for opponent's turn...\n");
         receive_message(clientSocket, buffer);
         printf("Opponent's turn: %s\n", buffer);
+        parse_shot(buffer, &x, &y);
+        if (player1Board[y][x] == 'S') {
+            player1Board[y][x] = 'X';
+            send_message(clientSocket, "Hit");
+        } else {
+            player1Board[y][x] = '0';
+            send_message(clientSocket, "Miss");
+        }
+
+        receive_message(clientSocket, buffer);
+        printf("%s\n", buffer);
+        if (strcmp("Hit", buffer) == 0) {
+            player2Board[y][x] = 'X';
+        } else {
+            player2Board[y][x] = '0';
+        }
+
+        print_board(player1Board, player2Board);
     }
 
     // Закрытие соединения
