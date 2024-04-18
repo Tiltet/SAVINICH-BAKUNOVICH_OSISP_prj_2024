@@ -1,70 +1,119 @@
-#include "user_client.h"
-#include "../../logicpart/place/place.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
-#include <sys/types.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-#include <iostream>
+#include <ctime>
 
-#define BUFFER_SIZE 2000
-#define PORT 8082
+#define BUFFER_SIZE 1024
+
+void send_message(int socket, const char* message) {
+    if (send(socket, message, strlen(message), 0) == -1) {
+        printf("Error sending message\n");
+        exit(1);
+    }
+}
+
+void receive_message(int socket, char* buffer) {
+    ssize_t bytesReceived = recv(socket, buffer, BUFFER_SIZE, 0);
+    if (bytesReceived == -1) {
+        printf("Error receiving message\n");
+        exit(1);
+    }
+    buffer[bytesReceived] = '\0';
+}
+
+void auto_place_ships(char board[10][10]) {
+    // Генерация случайного расположения кораблей
+    srand(time(NULL));
+    int i, j;
+    for (i = 0; i < 10; i++) {
+        for (j = 0; j < 10; j++) {
+            board[i][j] = '-';
+        }
+    }
+    for (i = 0; i < 5; i++) {
+        int dx = rand() % 10;
+        int dy = rand() % 10;
+        board[dx][dy] = 'S';
+    }
+}
+
+void print_board(char board[10][10]) {
+    int i, j;
+    printf("   ");
+    for (i = 0; i < 10; i++) {
+        printf("%d ", i);
+    }
+    printf("\n");
+    for (i = 0; i < 10; i++) {
+        printf("%d  ", i);
+        for (j = 0; j < 10; j++) {
+            printf("%c ", board[i][j]);
+        }
+        printf("\n");
+    }
+}
 
 int user_client() {
-    int socket_desc;
+    int clientSocket;
     struct sockaddr_in serverAddress;
-    char message[BUFFER_SIZE], server_reply[BUFFER_SIZE];
-    char ip_address[16];
-    char buffer[BUFFER_SIZE] = {0};
+    char buffer[BUFFER_SIZE];
 
     // Создание сокета
-    socket_desc = socket(AF_INET, SOCK_STREAM, 0);
-    if (socket_desc == -1) {
-        printf("Не удалось создать сокет\n");
-        return 1;
+    clientSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (clientSocket == -1) {
+        printf("Could not create socket\n");
+        exit(1);
     }
 
-    // Prompt user to enter the IP address
-    printf("Enter the IP address: ");
-    fgets(ip_address, sizeof(ip_address), stdin);
-    ip_address[strcspn(ip_address, "\n")] = '\0';
-
-    // Настройка адреса сервера и порта
+    // Настройка адреса сервера
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(PORT);
-    if (inet_pton(AF_INET, ip_address, &(serverAddress.sin_addr)) != 1)
-    {
-        std::cerr << "Неверный IP-адрес" << std::endl;
-        close(socket_desc);
-        return 1;
-    }
+    serverAddress.sin_port = htons(12345);
+    serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     // Подключение к серверу
-    if (connect(socket_desc, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0) {
-        perror("Не удалось подключиться");
-        return 1;
+    if (connect(clientSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1) {
+        printf("Connection failed\n");
+        exit(1);
     }
 
-    printf("Подключено к серверу\n");
+    // Ожидание начала игры
+    printf("Waiting for game to start...\n");
+    receive_message(clientSocket, buffer);
+    printf("%s\n", buffer);
 
-    // Инициализация игровых данных
-    char coordinates[10];
-    printf("Введите координаты хода (x,y): ");
-    fgets(coordinates, sizeof(coordinates), stdin);
-    send(socket_desc, coordinates, strlen(coordinates), 0);
+    char player1Board[10][10];
+    auto_place_ships(player1Board);
+    printf("Your board: \n");
+    print_board(player1Board);
 
-    // Получение хода другого игрока
-    int n = recv(socket_desc, buffer, BUFFER_SIZE, 0);
-    if (n > 0) {
-        printf("Ход другого игрока: %s\n", buffer);
+    // Игровой цикл
+    while (1) {
+        // Получение результата хода
+        //receive_message(clientSocket, buffer);
+        //printf("%s\n", buffer);
+
+        // Ход игрока
+        printf("Your turn: ");
+        fgets(buffer, BUFFER_SIZE, stdin);
+        buffer[strcspn(buffer, "\n")] = '\0';
+        send_message(clientSocket, buffer);
+
+        // Проверка на завершение игры
+//        if (strcmp(buffer, "Game over!") == 0) {
+//            break;
+//        }
+
+        // Ожидание хода противника
+        printf("Waiting for opponent's turn...\n");
+        receive_message(clientSocket, buffer);
+        printf("Opponent's turn: %s\n", buffer);
     }
 
-
-    // Закрытие сокета
-    close(socket_desc);
+    // Закрытие соединения
+    close(clientSocket);
 
     return 0;
 }

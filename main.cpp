@@ -13,7 +13,7 @@
 
 int main(int argc, char *argv[])
 {
-    interfaceTest(); // начальная функция отрисовки интерфейса
+    //interfaceTest(); // начальная функция отрисовки интерфейса
     int option;
     int s_option = 0;
     int c_option = 0;
@@ -48,12 +48,12 @@ struct option long_options[] =
     if (s_option == 1)
     {
         std::cout << "Запускаем сервер..." << std::endl;
-        int num = server_v3();
+        int num = server_host();
         return num;
     }
     else if (c_option == 1)
     {
-        interfaceTest();
+        user_client();
         return -1;
     }
     else

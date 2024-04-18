@@ -37,31 +37,19 @@ int client() {
 
     printf("Connected to the server.\n");
     // interfaceTest();
-    while (1) {
 
-        memset(buffer, 0, sizeof(buffer));
+    while(1) {
+        printf("Enter message: ");
+        fgets(buffer, strlen(buffer) - 1, stdin);
+        send(client_socket, buffer, strlen(buffer) - 1, 0);
 
-        // Wait for the player's turn
-        if (recv(client_socket, buffer, sizeof(buffer), 0) <= 0) {
-            perror("Failed to receive data from the server");
-            break;
-        }
-
-        printf("Received from server: %s\n", buffer);
-        memset(buffer, 0, sizeof(buffer));
-        // Take input from the player
-        printf("Enter your move: ");
-        // fgets(buffer, sizeof(buffer), stdin);
-        // Отправка координат выстрела
-        // sendShotCoordinates(client_socket);
-
-        // Send the move to the server
-        ssize_t sent = send(client_socket, buffer, strlen(buffer), 0);
-        if (sent < 0) {
-            perror("Failed to send data to the server");
-            break;
+        // Получение ответа от сервера
+        int bytes_received = recv(client_socket, buffer, strlen(buffer) - 1, 0);
+        if (bytes_received > 0) {
+            printf("Received message: %s\n", buffer);
         }
     }
+
 
     // Close the client socket
     close(client_socket);

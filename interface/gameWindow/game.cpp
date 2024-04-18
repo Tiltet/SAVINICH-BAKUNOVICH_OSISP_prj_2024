@@ -13,7 +13,7 @@ const int gridSize = 10;
 const int cellSize = 60;
 
 void game::Game::sendShootData(int x, int y) {
-    std::string message = std::to_string(x) + "," + std::to_string(y) + "\n";
+    std::string message = std::to_string(x) + "," + std::to_string(y);
     if (send(client_socket, message.c_str(), message.size(), 0) < 0) {
         perror("Failed to send shoot data to the server");
     }
@@ -222,9 +222,9 @@ game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window)
 
     // Раскрываем опционал и выводим координаты выстрела в консоль
     std::cout << "Координаты выстрела x: ";
-    if (coordinates.x && *coordinates.y)
+    if (*coordinates.x && *coordinates.y)
     {
-        std::cout << *coordinates.x << " " << *coordinates.y;
+        std::cout << *coordinates.x << " " << *coordinates.y << std::endl;
     }
     else
     {
@@ -232,7 +232,6 @@ game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window)
     }
     int x = *coordinates.x;
     int y = *coordinates.y;
-    sendShootData(x, y);
 
     // Получаем ответ от сервера
     auto serverResponse = receiveServerResponse();
@@ -243,6 +242,7 @@ game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window)
     } else {
         std::cout << "Failed to parse server response." << std::endl;
     }
+    sendShootData(x, y);
 
     return coordinates;
 }

@@ -4,130 +4,142 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-#include <pthread.h>
+#include <time.h>
 
-#define PORT 8082
-#define MAX_CLIENTS 2
-#define BUFFER_SIZE 2000
+#define BUFFER_SIZE 1024
 
-int currentPlayer = 0;
-
-struct client_info {
-    int socket;
-    struct sockaddr_in address;
-};
-
-void handleClient(int client_socket) {
-    char buffer[BUFFER_SIZE];
-    int n;
-
-    while (1) {
-        n = recv(client_socket, buffer, BUFFER_SIZE, 0);
-        if (n > 0) {
-            printf("Получено сообщение от клиента %d: %s\n", currentPlayer, buffer);
-            // Переключение на другого игрока
-            currentPlayer = 1 - currentPlayer;
-            // Пересылка сообщения другому клиенту
-            send(client_socket, buffer, n, 0);
-        } else {
-            break;
-        }
+void send_message_s(int socket, const char* message) {
+    if (send(socket, message, strlen(message), 0) == -1) {
+        printf("Error sending message\n");
+        exit(1);
     }
 }
 
-void *handle_client_v2(void *arg) {
-    char buffer[BUFFER_SIZE];
-    struct client_info *client = (struct client_info *)arg;
-    int socket = client->socket;
-    int new_socket;
-    struct sockaddr_in address = client->address;
-    char client_address[INET_ADDRSTRLEN];
-    inet_ntop(AF_INET, &(address.sin_addr), client_address, INET_ADDRSTRLEN);
-
-    printf("Подключен клиент %s:%d\n", client_address, ntohs(address.sin_port));
-
-    while (1) {
-        memset(buffer, '\0', sizeof(buffer));
-
-        // Принимаем данные от клиента
-        ssize_t received = recv(socket, buffer, sizeof(buffer), 0);
-        if (received < 0) {
-            perror("Ошибка получения данных от клиента");
-            break;
-        } else if (received == 0) {
-            printf("Клиент отключен: %s:%d\n", client_address, ntohs(address.sin_port));
-            break;
-        }
-
-        // Обработка данных от клиента
-        printf("Сообщение от клиента %s:%d: %s\n", client_address, ntohs(address.sin_port), buffer);
-
-        // Отправляем данные клиенту
-        if (send(socket, buffer, strlen(buffer), 0) < 0) {
-            perror("Не удалось отправить данные клиенту");
-            break;
-        }
+void receive_message_s(int socket, char* buffer) {
+    ssize_t bytesReceived = recv(socket, buffer, BUFFER_SIZE, 0);
+    if (bytesReceived == -1) {
+        printf("Error receiving message\n");
+        exit(1);
     }
-
-    // Закрываем сокет клиента
-    close(socket);
-    free(client);
-    pthread_exit(NULL);
+    buffer[bytesReceived] = '\0';
 }
+
+//void auto_place_ships(char board[10][10]) {
+//    // Генерация случайного расположения кораблей
+//    srand(time(NULL));
+//    int i, j;
+//    for (i = 0; i < 10; i++) {
+//        for (j = 0; j < 10; j++) {
+//            board[i][j] = '-';
+//        }
+//    }
+//    for (i = 0; i < 5; i++) {
+//        int dx = rand() % 10;
+//        int dy = rand() % 10;
+//        board[dx][dy] = 'S';
+//    }
+//}
+//
+//void print_board(char board[10][10]) {
+//    int i, j;
+//    printf("   ");
+//    for (i = 0; i < 10; i++) {
+//        printf("%d ", i);
+//    }
+//    printf("\n");
+//    for (i = 0; i < 10; i++) {
+//        printf("%d  ", i);
+//        for (j = 0; j < 10; j++) {
+//            printf("%c ", board[i][j]);
+//        }
+//        printf("\n");
+//    }
+//}
 
 int server_host() {
-    int socket_desc, client_sock, c, new_socket;
-    struct sockaddr_in server, client;
-    pthread_t thread_id;
-    struct client_info *client_info_ptr;
-    int addrlen = sizeof(server);
+    int serverSocket, player1Socket, player2Socket;;
+    struct sockaddr_in serverAddress, clientAddress;
+    char buffer[BUFFER_SIZE];
 
     // Создание сокета
-    socket_desc = socket(AF_INET, SOCK_STREAM, 0);
-    if (socket_desc == -1) {
-        printf("Не удалось создать сокет\n");
-        return 1;
+    serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (serverSocket == -1) {
+        printf("Could not create socket\n");
+        exit(1);
     }
 
-    // Подготовка структуры сервера
-    server.sin_family = AF_INET;
-    server.sin_addr.s_addr = INADDR_ANY;
-    server.sin_port = htons(PORT);
+    // Настройка адреса сервера
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_port = htons(12345);
+    serverAddress.sin_addr.s_addr = INADDR_ANY;
 
-    // Привязка сокета
-    if (bind(socket_desc, (struct sockaddr *)&server, sizeof(server)) < 0) {
-        perror("Не удалось привязать сокет");
-        return 1;
+    // Привязка сокета к адресу сервера
+    if (bind(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1) {
+        printf("Bind failed\n");
+        exit(1);
     }
 
-    printf("Сервер запущен на порту %d\n", PORT);
+    // Ожидание подключения клиента
+    listen(serverSocket, 2);
+    printf("Waiting for player 1 to connect...\n");
+    player1Socket = accept(serverSocket, NULL, NULL);
+    printf("Player 1 connected\n");
+    send_message_s(player1Socket, "Connected to server. Waiting for player 2 to join...");
 
-    // Ожидание подключения клиентов
-    listen(socket_desc, MAX_CLIENTS);
+    // Ожидание подключения второго игрока
+    printf("Waiting for player 2 to connect...\n");
+    player2Socket = accept(serverSocket, NULL, NULL);
+    printf("Player 2 connected\n");
+    send_message_s(player2Socket, "Connected to server. Game is starting...");
 
-    printf("Ожидание подключения клиентов...\n");
+    // Игровой цикл
+    while (1) {
+        // Создание и расстановка кораблей для каждого игрока
+//        char player1Board[10][10];
+//        auto_place_ships(player1Board);
+//        char player2Board[10][10];
+//        auto_place_ships(player2Board);
 
-    int client_sockets[MAX_CLIENTS];
-    int client_count = 0;
-    while (client_count < MAX_CLIENTS) {
-        if ((new_socket = accept(socket_desc, (struct sockaddr *)&server, (socklen_t*)&addrlen)) < 0) {
-            perror("accept");
-            exit(EXIT_FAILURE);
+        // Отправка игровых досок игрокам
+        //send_message_s(player1Socket, "Game starts! Your board:");
+        //send_message_s(player1Socket, "Player 1 Board:");
+        //send_message_s(player1Socket, player1Board);
+        //send_message_s(player2Socket, "Game starts! Your board:");
+        //send_message_s(player2Socket, "Player 2 Board:");
+        //send_message_s(player2Socket, player2Board);
+
+        // Игровой цикл для текущей партии
+        int currentPlayer = 0;
+        while (1) {
+
+            if (currentPlayer == 0) {
+                //send_message_s(player1Socket, "Your turn. Enter coordinates: ");
+                receive_message_s(player1Socket, buffer);
+                printf("Player 1's turn: %s\n", buffer); // Для отладки
+                send_message_s(player2Socket, buffer);
+                currentPlayer = 1 - currentPlayer;
+            } else {
+                //send_message_s(player2Socket, "Your turn. Enter coordinates: ");
+                receive_message_s(player2Socket, buffer);
+                printf("Player 2's turn: %s\n", buffer); // Для отладки
+                send_message_s(player1Socket, buffer);
+                currentPlayer = 1 - currentPlayer;
+            }
         }
 
-        client_sockets[client_count] = new_socket;
-        client_count++;
+        // Отправка результатов игры игрокам
+        send_message_s(player1Socket, "Game over!");
+        send_message_s(player2Socket, "Game over!");
+
+        // Ожидание команды для начала новой партии
+        receive_message_s(player1Socket, buffer);
+        receive_message_s(player2Socket, buffer);
     }
 
-    // Обработка клиентов
-    for (int i = 0; i < MAX_CLIENTS; i++) {
-        handleClient(client_sockets[i]);
-    }
-
-    // Закрытие сокетов
-    for (int i = 0; i < MAX_CLIENTS; i++) {
-        close(client_sockets[i]);
-    }
+    // Закрытие соединений
+    close(serverSocket);
+    close(player1Socket);
+    close(player2Socket);
 
     return 0;
 }

@@ -16,15 +16,15 @@
 #include <netinet/if_ether.h>
 
 
-//#define SERVER_IP "172.20.10.15"
+#define SERVER_IP "127.0.0.1"
 #define PORT 8082
 
 int server_v3() {
     int server_socket, client_sockets[2];
     struct sockaddr_in server_address, client_addresses[2];
     socklen_t client_address_len = sizeof(client_addresses[0]);
-    char buffer[1024];
     int current_player = 0; // 0 или 1, чтобы отслеживать текущего игрока
+    char buffer[1024];
 
     // Создание серверного сокета
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -68,20 +68,14 @@ int server_v3() {
     }
 
     // Основной цикл игры
+    int current_client = 0;
     while (1) {
-        // Отправка сигнала текущему игроку о начале его хода
-        send(client_sockets[current_player], buffer, sizeof(buffer), 0);
-
-        // Получение хода от текущего игрока
-        memset(buffer, 0, sizeof(buffer));
-        if (recv(client_sockets[current_player], buffer, sizeof(buffer), 0) <= 0) {
-            perror("Failed to receive data from the client");
-            break;
+        int bytes_received = recv(client_sockets[current_client], buffer, strlen(buffer) - 1, 0);
+        if (bytes_received > 0) {
+            printf("Received message from client %d: %s\n", current_client + 1, buffer);
+            send(client_sockets[1 - current_client], buffer, bytes_received, 0);
         }
-        printf("Received from client %d: %s\n", current_player + 1, buffer);
-
-        // Переключение на другого игрока
-        current_player = 1 - current_player;
+        current_client = 1 - current_client; // Переключение между клиентами
     }
 
     // Закрытие сокетов
