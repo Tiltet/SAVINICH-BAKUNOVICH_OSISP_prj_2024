@@ -83,15 +83,14 @@ bool is_valid_coordinate(const char* coordinate) {
     return true;
 }
 
-bool parse_shot(const char* shot, int* x, int* y) {
-    if (shot[0] < 'A' || shot[0] > 'J')
-        return false;
+bool parse_shot(const char* coordinates, int* x, int* y) {
+    if (coordinates == NULL || coordinates[0] < 'A' || coordinates[0] > 'J' ||
+        coordinates[1] < '0' || coordinates[1] > '9') {
+        return false; // Некорректный формат координат
+    }
 
-    if (shot[1] < '0' || shot[1] > '9')
-        return false;
-
-    *x = shot[0] - 'A';
-    *y = shot[1] - '0';
+    *x = coordinates[0] - 'A'; // Преобразование буквы в индекс (0-9)
+    *y = coordinates[1] - '0'; // Преобразование числа в индекс (0-9)
 
     return true;
 }
@@ -100,7 +99,6 @@ int user_client() {
     int clientSocket;
     struct sockaddr_in serverAddress;
     char buffer[BUFFER_SIZE];
-    int x, y;
 
     // Создание сокета
     clientSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -131,43 +129,96 @@ int user_client() {
     init_ships(player2Board);
     printf("Your board: \n");
     print_board(player1Board, player2Board);
-
+    int currentPlayer = 0;
     // Игровой цикл
     while (1) {
 
-        // Ход игрока
-        printf("Your turn: ");
-        fgets(buffer, BUFFER_SIZE, stdin);
-        while (!is_valid_coordinate(buffer)) {
-            printf("Введенные координаты являются недопустимыми.\n", buffer);
-            fgets(buffer, BUFFER_SIZE, stdin);
-            buffer[0] = toupper(buffer[0]);
-        }
-        //parse_shot(buffer, &x, &y);
-        //player2Board[y][x] = '0';
-        buffer[strcspn(buffer, "\n")] = '\0';
-        send_message(clientSocket, buffer);
-
-        // Ожидание хода противника
-        printf("Waiting for opponent's turn...\n");
-        receive_message(clientSocket, buffer);
-        printf("Opponent's turn: %s\n", buffer);
-        parse_shot(buffer, &x, &y);
-        if (player1Board[y][x] == 'S') {
-            player1Board[y][x] = 'X';
-            send_message(clientSocket, "Hit");
-        } else {
-            player1Board[y][x] = '0';
-            send_message(clientSocket, "Miss");
-        }
-
         receive_message(clientSocket, buffer);
         printf("%s\n", buffer);
-        if (strcmp("Hit", buffer) == 0) {
-            player2Board[y][x] = 'X';
+        if (strcmp(buffer, "Your turn: ") == 0) {
+
+            //Shoot
+            fgets(buffer, BUFFER_SIZE, stdin);
+            while (!is_valid_coordinate(buffer)) {
+                printf("Введенные координаты являются недопустимыми.\n", buffer);
+                fgets(buffer, BUFFER_SIZE, stdin);
+                //buffer[0] = toupper(buffer[0]);
+            }
+            buffer[strcspn(buffer, "\n")] = '\0';
+            send_message(clientSocket, buffer);
+            int x, y = 0;
+            parse_shot(buffer, &x, &y);
+
+            //Opponent board (your shoot)
+            receive_message(clientSocket, buffer);
+            printf("Shoot status: %s\n", buffer);
+            //parse_shot(buffer, &x, &y);
+            if (strcmp("Hit", buffer) == 0) {
+                player2Board[y][x] = 'X';
+                //send_message(clientSocket, "Hit");
+            } else {
+                player2Board[y][x] = '0';
+                //send_message(clientSocket, "Miss");
+            }
+
+//            receive_message(clientSocket, buffer);
+//            if (player1Board[y][x] == 'S') {
+//                player2Board[y][x] = 'X';
+//                send_message(clientSocket, "Hit");
+//            } else {
+//                player2Board[y][x] = '0';
+//                send_message(clientSocket, "Miss");
+//            }
+            currentPlayer = 1 + currentPlayer;
         } else {
-            player2Board[y][x] = '0';
+            int x, y = 0;
+            receive_message(clientSocket, buffer);
+            printf("%s\n", buffer);
+            parse_shot(buffer, &x, &y);
+            //printf("%d, %d", x, y);
+            if (player1Board[y][x] == 'S') {
+                player1Board[y][x] = 'X';
+                send_message(clientSocket, "Hit");
+            } else {
+                player1Board[y][x] = '0';
+                send_message(clientSocket, "Miss");
+            }
+            currentPlayer = 1 - currentPlayer;
         }
+
+        // Ход игрока
+        //printf("Your turn: ");
+
+
+//        fgets(buffer, BUFFER_SIZE, stdin);
+//        while (!is_valid_coordinate(buffer)) {
+//            printf("Введенные координаты являются недопустимыми.\n", buffer);
+//            fgets(buffer, BUFFER_SIZE, stdin);
+//            buffer[0] = toupper(buffer[0]);
+//        }
+//        buffer[strcspn(buffer, "\n")] = '\0';
+//        send_message(clientSocket, buffer);
+//
+//        // Ожидание хода противника
+//        printf("Waiting for opponent's turn...\n");
+//        receive_message(clientSocket, buffer);
+//        printf("Opponent's turn: %s\n", buffer);
+//        parse_shot(buffer, &x, &y);
+//        if (player1Board[y][x] == 'S') {
+//            player1Board[y][x] = 'X';
+//            send_message(clientSocket, "Hit");
+//        } else {
+//            player1Board[y][x] = '0';
+//            send_message(clientSocket, "Miss");
+//        }
+//
+//        receive_message(clientSocket, buffer);
+//        printf("%s\n", buffer);
+//        if (strcmp("Hit", buffer) == 0) {
+//            player2Board[y][x] = 'X';
+//        } else {
+//            player2Board[y][x] = '0';
+//        }
 
         print_board(player1Board, player2Board);
     }

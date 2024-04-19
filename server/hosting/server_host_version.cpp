@@ -94,32 +94,29 @@ int server_host() {
 
     // Игровой цикл
     while (1) {
-        // Создание и расстановка кораблей для каждого игрока
-//        char player1Board[10][10];
-//        auto_place_ships(player1Board);
-//        char player2Board[10][10];
-//        auto_place_ships(player2Board);
-
-        // Отправка игровых досок игрокам
-        //send_message_s(player1Socket, "Game starts! Your board:");
-        //send_message_s(player1Socket, "Player 1 Board:");
-        //send_message_s(player1Socket, player1Board);
-        //send_message_s(player2Socket, "Game starts! Your board:");
-        //send_message_s(player2Socket, "Player 2 Board:");
-        //send_message_s(player2Socket, player2Board);
 
         // Игровой цикл для текущей партии
         int currentPlayer = 0;
         while (1) {
 
             if (currentPlayer == 0) {
+                send_message_s(player1Socket, "Your turn: ");
+                send_message_s(player2Socket, "Player 1 turn: ");
+
                 receive_message_s(player1Socket, buffer);
                 printf("Player 1's turn: %s\n", buffer); // Для отладки
+
+
                 send_message_s(player2Socket, buffer);
                 receive_message_s(player2Socket, buffer);
                 send_message_s(player1Socket, buffer);
                 currentPlayer = 1 - currentPlayer;
             } else {
+                send_message_s(player2Socket, "Your turn: ");
+                send_message_s(player1Socket, "Player 2 turn: ");
+
+
+
                 receive_message_s(player2Socket, buffer);
                 printf("Player 2's turn: %s\n", buffer); // Для отладки
                 send_message_s(player1Socket, buffer);
