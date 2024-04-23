@@ -123,7 +123,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
     // Настройка адреса сервера
     struct sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(12346);
+    serverAddress.sin_port = htons(12345);
     serverAddress.sin_addr.s_addr = inet_addr(ip_address);
 
     // Подключение к серверу
@@ -139,20 +139,19 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
     printf("Waiting for game to start...\n");
     receive_message(clientSocket, buffer);
     printf("%s\n", buffer);
-    sleep(1);
     receive_message(clientSocket, buffer);
     printf("%s\n", buffer);
 
     if (strcmp(buffer, "Your turn: ") == 0)
     {
         currentPlayer = 0;
-        std::cout << currentPlayer;
     }
     else
     {
         currentPlayer = 1;
-        std::cout << currentPlayer;
     }
+
+    std::cout << currentPlayer << std::endl;
 
     while (window.isOpen())
     {
@@ -162,6 +161,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
         {
             if (currentPlayer == 1)
             {
+                std::cout << "Игрок ждет" << std::endl;
                 window.setMouseCursorVisible(false);
                 receive_message(clientSocket, buffer);
                 printf("%s\n", buffer);
@@ -186,7 +186,12 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                 printf("Ждет\n");
                 currentPlayer = 0;
             }
-            else if (event.type == sf::Event::Closed)
+            else
+            {
+                window.setMouseCursorVisible(true);
+            }
+
+            if (event.type == sf::Event::Closed)
             {
                 window.close();
             }
@@ -196,8 +201,14 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                 {
                     int x = 0;
                     int y = 0;
+                    std::cout << "Игрок стреляет" << std::endl;
+
                     shoot(window, &x, &y);
-                    printf("%d, %d", x, y);
+                    currentPlayer = 1;
+
+                    std::cout << "x = " << x << std::endl;
+                    std::cout << "y = " << y << std::endl;
+
                     parse_shot(buffer, &x, &y);
                     receive_message(clientSocket, buffer);
                     printf("Shoot status: %s\n", buffer);
@@ -213,7 +224,6 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                             std::cout << "Row = " << x << std::endl;
                             std::cout << "Col = " << y << std::endl;
                         }
-                        //send_message(clientSocket, "Hit");
                     }
                     else
                     {
@@ -226,7 +236,6 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                             std::cout << "Row = " << x << std::endl;
                             std::cout << "Col = " << y << std::endl;
                         }
-                        //send_message(clientSocket, "Miss");
                     }
 
                     //shoot(window);
@@ -234,92 +243,6 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                 }
             }
         }
-
-
-
-        /*
-        if (currentPlayer == 0)
-        {
-            while (window.pollEvent(event))
-            {
-                if (event.type == sf::Event::Closed)
-                {
-                    window.close();
-                }
-                else if (event.type == sf::Event::MouseButtonPressed)   // событие нажатия на кнопку мыши
-                {
-                    if (event.mouseButton.button == sf::Mouse::Left)    // если нажата левая клавиша мыши
-                    {
-                        int x = 0;
-                        int y = 0;
-                        shoot(window, &x, &y);
-                        printf("%d, %d", x, y);
-                        parse_shot(buffer, &x, &y);
-                        receive_message(clientSocket, buffer);
-                        printf("Shoot status: %s\n", buffer);
-                        if (strcmp("Hit", buffer) == 0)
-                        {
-                            Cell& cell = this->mapEnemy[y][x];
-
-                            if (cell.state == CellState::Ship)
-                            {
-                                cell.state = CellState::Hit;
-                                cell.shape.setFillColor(sf::Color::Red);
-                                std::cout << "hit" << std::endl;
-                                std::cout << "Row = " << x << std::endl;
-                                std::cout << "Col = " << y << std::endl;
-                            }
-                            //send_message(clientSocket, "Hit");
-                        }
-                        else
-                        {
-                            Cell& cell = this->mapEnemy[x][y];
-                            if (cell.state == CellState::Empty)
-                            {
-                                cell.state = CellState::Miss;
-                                cell.shape.setFillColor(sf::Color::Blue);
-                                std::cout << "miss" << std::endl;
-                                std::cout << "Row = " << x << std::endl;
-                                std::cout << "Col = " << y << std::endl;
-                            }
-                            //send_message(clientSocket, "Miss");
-                        }
-
-                        //shoot(window);
-                        //sound.play();
-                    }
-                }
-            }
-            printf("Стреляет\n");
-            currentPlayer = 1;
-        }
-        else
-        {
-            window.setMouseCursorVisible(false);
-            receive_message(clientSocket, buffer);
-            printf("%s\n", buffer);
-            int x, y = 0;
-            parse_shot(buffer, &x, &y);
-            printf("%d, %d", x, y);
-            Cell& cell = this->mapUser[y][x];
-            if (cell.state == CellState::Ship)
-            {
-                cell.state = CellState::Hit;
-                cell.shape.setFillColor(sf::Color::Red);
-                std::cout << "hit" << std::endl;
-                send_message(clientSocket, "Hit");
-            }
-            else
-            {
-                cell.state = CellState::Miss;
-                cell.shape.setFillColor(sf::Color::Blue);
-                std::cout << "miss" << std::endl;
-                send_message(clientSocket, "Miss");
-            }
-            printf("Ждет\n");
-            currentPlayer = 0;
-        }
-        */
 
         window.clear();
         window.draw(background);
@@ -368,74 +291,49 @@ void game::Game::drawMaps(sf::RenderWindow& window)
     }
 }
 
-game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window, int *x, int*y)
+game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window, int *x, int*y) const
 {
     ShootCoordinates coordinates;
     char buffer[BUFFER_SIZE];
-    receive_message(clientSocket, buffer);
     printf("%s\n", buffer);
-    if (strcmp(buffer, "Your turn: ") == 0) {
-        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-        sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
 
-        // Считаем номер колонки и строки в поле Enemy
-        int colEnemy = (worldPos.x - globalScreenWigth / 1.85) / cellSize;
-        int rowEnemy = (worldPos.y - globalScreenHeight / 6) / cellSize;
+    // Считаем номер колонки и строки в поле Enemy
+    int colEnemy = (worldPos.x - globalScreenWigth / 1.85) / cellSize;
+    int rowEnemy = (worldPos.y - globalScreenHeight / 6) / cellSize;
 
-        if (colEnemy >= 0 && colEnemy < gridSize && rowEnemy >= 0 && rowEnemy < gridSize)
-        {
-//            Cell& cell = this->mapEnemy[rowEnemy][colEnemy];
-//
-//            if (cell.state == CellState::Empty)
-//            {
-//                cell.state = CellState::Miss;
-//                cell.shape.setFillColor(sf::Color::Blue);
-//                std::cout << "miss" << std::endl;
-//                std::cout << "Row = " << rowEnemy << std::endl;
-//                std::cout << "Col = " << colEnemy << std::endl;
-//            }
-//            else if (cell.state == CellState::Ship)
-//            {
-//                cell.state = CellState::Hit;
-//                cell.shape.setFillColor(sf::Color::Red);
-//                std::cout << "hit" << std::endl;
-//                std::cout << "Row = " << rowEnemy << std::endl;
-//                std::cout << "Col = " << colEnemy << std::endl;
-//            }
-            coordinates.x = rowEnemy;
-            coordinates.y = colEnemy;
-        }
-
-        // Раскрываем опционал и выводим координаты выстрела в консоль
-        std::cout << "Координаты выстрела x: ";
-        if (*coordinates.x && *coordinates.y)
-        {
-            std::cout << *coordinates.x << " " << *coordinates.y << std::endl;
-        }
-        else
-        {
-            std::cout << "Неправильные координат\n";
-        }
-        *x = *coordinates.x;
-        *y = *coordinates.y;
-        //parse_shot(buffer, &x, &y);
-        char letter = 'A' + *x - 1;
-        //printf("%c\n", letter);
-        add_letter_and_int(buffer, letter, *y);
-        buffer[strcspn(buffer, "\n")] = '\0';
-        send_message(clientSocket, buffer);
-        return coordinates;
+    if (colEnemy >= 0 && colEnemy < gridSize && rowEnemy >= 0 && rowEnemy < gridSize)
+    {
+        coordinates.x = rowEnemy;
+        coordinates.y = colEnemy;
     }
 
-//    Получаем ответ от сервера
-//    auto serverResponse = receiveServerResponse();
-//    if (serverResponse.first != -1 && serverResponse.second != -1) {
-//        // Обработка полученных координат
-//        std::cout << "Received coordinates from server: " << serverResponse.first << ", " << serverResponse.second << std::endl;
-//        // Здесь вы можете добавить логику обработки координат, полученных от сервера
-//    } else {
-//        std::cout << "Failed to parse server response." << std::endl;
-//    }
-//    sendShootData(x, y);
+    // Раскрываем опционал и выводим координаты выстрела в консоль
+    std::cout << "Координаты выстрела x: ";
+    if (*coordinates.x && *coordinates.y)
+    {
+        std::cout << *coordinates.x << " " << *coordinates.y << std::endl;
+    }
+    else
+    {
+        std::cout << "Неправильные координат\n";
+    }
+    *x = *coordinates.x;
+    *y = *coordinates.y;
+
+    std::cout << "x = " << *x << " y = " << *y << std::endl;
+
+    char letter = 'A' + *x - 1;
+    std::cout << "letter = " << letter << std::endl;
+
+    add_letter_and_int(buffer, letter, *y);
+    buffer[strcspn(buffer, "\n")] = '\0';
+
+    std::sprintf(buffer, "%s%c", std::to_string(*y).c_str(), letter);
+
+    std::cout << buffer << std::endl;
+
+    send_message(clientSocket, buffer);
     return coordinates;
 }
