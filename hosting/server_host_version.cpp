@@ -72,7 +72,7 @@ int server_host() {
 
     // Настройка адреса сервера
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(12346);
+    serverAddress.sin_port = htons(12345);
     serverAddress.sin_addr.s_addr = INADDR_ANY;
 
     // Привязка сокета к адресу сервера
@@ -99,18 +99,18 @@ int server_host() {
     printf("Waiting for player 2 to connect...\n");
     player2Socket = accept(serverSocket, NULL, NULL);
     printf("Player 2 connected\n");
-    //send_message_s(player2Socket, "Connected to server. Game is starting...");
+    send_message_s(player2Socket, "Connected to server. Game is starting...");
 
     // Игровой цикл
     //while (1) {
-
+    send_message_s(player1Socket, "Your turn: ");
+    send_message_s(player2Socket, "Player 1 turn: ");
         // Игровой цикл для текущей партии
         int currentPlayer = 0;
         while (1) {
 
             if (currentPlayer == 0) {
-                send_message_s(player1Socket, "Your turn: ");
-                send_message_s(player2Socket, "Player 1 turn: ");
+
 
                 receive_message_s(player1Socket, buffer);
                 printf("Player 1's turn: %s\n", buffer); // Для отладки
@@ -121,9 +121,6 @@ int server_host() {
                 send_message_s(player1Socket, buffer);
                 currentPlayer = 1 - currentPlayer;
             } else {
-                send_message_s(player2Socket, "Your turn: ");
-                send_message_s(player1Socket, "Player 2 turn: ");
-
 
                 receive_message_s(player2Socket, buffer);
                 printf("Player 2's turn: %s\n", buffer); // Для отладки

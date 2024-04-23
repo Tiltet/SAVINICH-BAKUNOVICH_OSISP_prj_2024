@@ -125,7 +125,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
     // Настройка адреса сервера
     struct sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(12346);
+    serverAddress.sin_port = htons(12345);
     serverAddress.sin_addr.s_addr = inet_addr(ip_address);
 
     // Подключение к серверу
@@ -140,14 +140,20 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
     printf("Waiting for game to start...\n");
     receive_message(clientSocket, buffer);
     printf("%s\n", buffer);
-    //sleep(1);
+    sleep(1);
+    receive_message(clientSocket, buffer);
+    printf("%s\n", buffer);
+    if (strcmp(buffer, "Your turn: ") == 0) {
+        currentPlayer = 0;
+    } else {
+        currentPlayer = 1;
+    }
     while (window.isOpen())
     {
         sf::Event event;
-        receive_message(clientSocket, buffer);
-        printf("%s\n", buffer);
-        sleep(1);
-        if (strcmp(buffer, "Your turn: ") == 0) {
+
+        if (currentPlayer == 0)
+        {
             while (window.pollEvent(event))
             {
                 if (event.type == sf::Event::Closed)
@@ -158,7 +164,8 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                 {
                     if (event.mouseButton.button == sf::Mouse::Left)    // если нажата левая клавиша мыши
                     {
-                        int x, y = 0;
+                        int x = 0;
+                        int y = 0;
                         shoot(window, &x, &y);
                         printf("%d, %d", x, y);
                         parse_shot(buffer, &x, &y);
@@ -188,34 +195,40 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                             }
                             //send_message(clientSocket, "Miss");
                         }
-                        currentPlayer = 1 + currentPlayer;
 
                         //shoot(window);
                         //sound.play();
                     }
                 }
             }
+            printf("chizas\n");
+            currentPlayer = 1 + currentPlayer;
         }
         else
         {
-            //window.setMouseCursorVisible(false);
+            window.setMouseCursorVisible(false);
             receive_message(clientSocket, buffer);
             printf("%s\n", buffer);
             int x, y = 0;
             parse_shot(buffer, &x, &y);
             printf("%d, %d", x, y);
             Cell& cell = this->mapUser[y][x];
-            if (cell.state == CellState::Ship) {
+            if (cell.state == CellState::Ship)
+            {
                 cell.state = CellState::Hit;
                 cell.shape.setFillColor(sf::Color::Red);
                 std::cout << "hit" << std::endl;
                 send_message(clientSocket, "Hit");
-            } else {
+            }
+            else
+            {
                 cell.state = CellState::Miss;
                 cell.shape.setFillColor(sf::Color::Blue);
                 std::cout << "miss" << std::endl;
                 send_message(clientSocket, "Miss");
             }
+            printf("ne chizas\n");
+            currentPlayer = 1 - currentPlayer;
         }
 
         window.clear();
