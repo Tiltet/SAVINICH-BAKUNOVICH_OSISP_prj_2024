@@ -17,8 +17,8 @@ namespace game
 {
     struct ShootCoordinates
     {
-        std::optional<int> x;
-        std::optional<int> y;
+        int x;
+        int y;
     };
 
     class Game
@@ -36,7 +36,7 @@ namespace game
         explicit Game(sf::RenderWindow &window, sf::RectangleShape background, std::vector<std::vector<Cell>> map);
         void initMapEnemy();
         void drawMaps(sf::RenderWindow& window);
-        ShootCoordinates shoot(sf::RenderWindow &window, int *x, int*y) const;
+        ShootCoordinates shoot(sf::RenderWindow &window) const;
     };
 }
 

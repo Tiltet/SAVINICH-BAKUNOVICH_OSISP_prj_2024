@@ -123,7 +123,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
     // Настройка адреса сервера
     struct sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(12345);
+    serverAddress.sin_port = htons(12346);
     serverAddress.sin_addr.s_addr = inet_addr(ip_address);
 
     // Подключение к серверу
@@ -145,13 +145,13 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
     if (strcmp(buffer, "Your turn: ") == 0)
     {
         currentPlayer = 0;
+        std::cout << "Ходит первым" << std::endl;
     }
     else
     {
+        std::cout << "Ходит вторым" << std::endl;
         currentPlayer = 1;
     }
-
-    std::cout << currentPlayer << std::endl;
 
     while (window.isOpen())
     {
@@ -164,10 +164,13 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                 std::cout << "Игрок ждет" << std::endl;
                 window.setMouseCursorVisible(false);
                 receive_message(clientSocket, buffer);
-                printf("%s\n", buffer);
+                printf("Буфер с сервера = %s\n", buffer);
                 int x, y = 0;
                 parse_shot(buffer, &x, &y);
-                printf("%d, %d", x, y);
+
+                std::cout << "Координата x после парса = " << x << std::endl;
+                std::cout << "Координата y после парса = " << y << std::endl;
+
                 Cell& cell = this->mapUser[y][x];
                 if (cell.state == CellState::Ship)
                 {
@@ -203,42 +206,13 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                     int y = 0;
                     std::cout << "Игрок стреляет" << std::endl;
 
-                    shoot(window, &x, &y);
+                    shoot(window);
                     currentPlayer = 1;
 
                     std::cout << "x = " << x << std::endl;
                     std::cout << "y = " << y << std::endl;
 
                     parse_shot(buffer, &x, &y);
-                    receive_message(clientSocket, buffer);
-                    printf("Shoot status: %s\n", buffer);
-                    if (strcmp("Hit", buffer) == 0)
-                    {
-                        Cell& cell = this->mapEnemy[y][x];
-
-                        if (cell.state == CellState::Ship)
-                        {
-                            cell.state = CellState::Hit;
-                            cell.shape.setFillColor(sf::Color::Red);
-                            std::cout << "hit" << std::endl;
-                            std::cout << "Row = " << x << std::endl;
-                            std::cout << "Col = " << y << std::endl;
-                        }
-                    }
-                    else
-                    {
-                        Cell& cell = this->mapEnemy[x][y];
-                        if (cell.state == CellState::Empty)
-                        {
-                            cell.state = CellState::Miss;
-                            cell.shape.setFillColor(sf::Color::Blue);
-                            std::cout << "miss" << std::endl;
-                            std::cout << "Row = " << x << std::endl;
-                            std::cout << "Col = " << y << std::endl;
-                        }
-                    }
-
-                    //shoot(window);
                     //sound.play();
                 }
             }
@@ -291,11 +265,11 @@ void game::Game::drawMaps(sf::RenderWindow& window)
     }
 }
 
-game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window, int *x, int*y) const
+game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window) const
 {
     ShootCoordinates coordinates;
     char buffer[BUFFER_SIZE];
-    printf("%s\n", buffer);
+
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
 
@@ -311,29 +285,49 @@ game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window, int *x, int*y
 
     // Раскрываем опционал и выводим координаты выстрела в консоль
     std::cout << "Координаты выстрела x: ";
-    if (*coordinates.x && *coordinates.y)
+    if (coordinates.x && coordinates.y)
     {
-        std::cout << *coordinates.x << " " << *coordinates.y << std::endl;
+        std::cout << coordinates.x << " " << coordinates.y << std::endl;
     }
     else
     {
         std::cout << "Неправильные координат\n";
     }
-    *x = *coordinates.x;
-    *y = *coordinates.y;
 
-    std::cout << "x = " << *x << " y = " << *y << std::endl;
+    std::cout << "x = " << coordinates.x << " y = " << coordinates.y << std::endl;
 
-    char letter = 'A' + *x - 1;
+    char letter = 'A' + coordinates.x;
     std::cout << "letter = " << letter << std::endl;
 
-    add_letter_and_int(buffer, letter, *y);
+    add_letter_and_int(buffer, letter, coordinates.y);
     buffer[strcspn(buffer, "\n")] = '\0';
 
-    std::sprintf(buffer, "%s%c", std::to_string(*y).c_str(), letter);
+    std::sprintf(buffer, "%c%s", letter, std::to_string(coordinates.y).c_str());
 
     std::cout << buffer << std::endl;
 
     send_message(clientSocket, buffer);
+
+    sleep(1);
+
+    receive_message(clientSocket, buffer);
+    printf("Буфер с сервера = %s\n", buffer);
+
+    Cell cell = (this->mapUser[coordinates.x][coordinates.y]);
+    if (cell.state == CellState::Ship)
+    {
+        cell.state = CellState::Hit;
+        cell.shape.setFillColor(sf::Color::Red);
+        std::cout << "hit" << std::endl;
+        send_message(clientSocket, "Hit");
+    }
+    else
+    {
+        cell.state = CellState::Miss;
+        cell.shape.setFillColor(sf::Color::Blue);
+        std::cout << "miss" << std::endl;
+        send_message(clientSocket, "Miss");
+    }
+
     return coordinates;
 }
