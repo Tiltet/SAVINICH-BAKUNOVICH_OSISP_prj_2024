@@ -3,7 +3,6 @@
 //
 
 #include "game.h"
-#include "../../user_client/user_client.h"
 #include "../../connection_funcs/con_funcs.h"
 #include <utility>
 
