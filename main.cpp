@@ -1,14 +1,10 @@
 #include <iostream>
 #include <getopt.h>
 
-
 #include "interface/interface.h"
-// #include "logicpart/logic.h"
-#include "client/client.h"
-#include "server/hosting/server_host_version.h"
-#include "client/user_client/user_client.h"
+#include "hosting/server_host_version.h"
+#include "user_client/user_client.h"
 #include "logicpart/place/place.h"
-#include "server/server_v3.h"
 
 
 int main(int argc, char *argv[])

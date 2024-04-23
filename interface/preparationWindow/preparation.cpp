@@ -3,7 +3,7 @@
 //
 
 #include "preparation.h"
-#include "../../client/client.h"
+#include "../../user_client/user_client.h"
 
 pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape background, menu::Menu gameMenu) : gameMenu(std::move(gameMenu))
 {

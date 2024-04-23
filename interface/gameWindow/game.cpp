@@ -3,7 +3,8 @@
 //
 
 #include "game.h"
-#include "../../client/client.h"
+#include "../../user_client/user_client.h"
+#include "../../connection_funcs/con_funcs.h"
 #include <utility>
 
 #define SERVER_IP "127.0.0.1"

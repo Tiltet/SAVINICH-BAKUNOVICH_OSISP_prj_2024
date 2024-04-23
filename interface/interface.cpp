@@ -12,7 +12,14 @@ void interfaceTest()
     setGlobalFont();
     setGlobalScreenSize();
 
+    sf::SoundBuffer soundBuffer;
+    if (!soundBuffer.loadFromFile("../interface/sounds/goToMenu.mp3"))
+    {
+        return;
+    }
 
+    sf::Sound sound;
+    sound.setBuffer(soundBuffer);
 
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Sea Battle", sf::Style::Fullscreen);
     window.setMouseCursorVisible(false);
@@ -50,12 +57,12 @@ void interfaceTest()
                 if (event.key.code == sf::Keyboard::Up)
                 {
                     menu.moveUp();
-                    //sound.play();
+                    sound.play();
                 }
                 else if (event.key.code == sf::Keyboard::Down)
                 {
                     menu.moveDown();
-                    //sound.play();
+                    sound.play();
                 }
                 else if (event.key.code == sf::Keyboard::Return)
                 {
