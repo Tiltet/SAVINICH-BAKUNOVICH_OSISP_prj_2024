@@ -3,7 +3,8 @@
 //
 
 #include "preparation.h"
-#include "../../client/client.h"
+#include <unistd.h>
+#include "../../user_client/user_client.h"
 
 pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape background, menu::Menu gameMenu) : gameMenu(std::move(gameMenu))
 {
@@ -13,6 +14,20 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
     this->gameMenu.addItem("Start", 86, sf::Color::White);
     this->gameMenu.addItem("Exit", 86, sf::Color::White);
     this->gameMenu.alignMenu(3);
+
+    sf::Text inputText;
+    inputText.setFont(globalFont);
+    inputText.setCharacterSize(24);
+    inputText.setFillColor(sf::Color::Black);
+    inputText.setPosition(300, 300);
+
+    sf::RectangleShape textBox;
+    textBox.setSize(sf::Vector2f(300, 48)); // Задайте нужные значения ширины и высоты
+    textBox.setPosition(300, 300);
+    textBox.setFillColor(sf::Color::White);
+    window.setMouseCursorVisible(true);
+
+    std::string currentText;
 
     sf::Texture texture_window_background;
     if (!texture_window_background.loadFromFile("../interface/img/background2.jpg"))
@@ -66,6 +81,7 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
                             check = 2;
                             break;
                         default:
+                            window.close();
                             break;
                     }
                 }
@@ -95,7 +111,8 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
             }
 
 
-            game::Game(window, background, this->map);
+            // game::Game(window, background, this->map);
+            ip::Ip(window, background);
             window.close();
         }
 
@@ -104,6 +121,7 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
         this->gameMenu.draw(window);
         drawMap(window);
         window.display();
+        sleep(1);
     }
 }
 

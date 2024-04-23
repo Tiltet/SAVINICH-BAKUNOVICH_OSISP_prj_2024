@@ -27,7 +27,7 @@ namespace game
         int number{};
         std::vector<std::vector<Cell>> mapUser;
         std::vector<std::vector<Cell>> mapEnemy;
-        int client_socket;
+        int clientSocket;
 
         void sendShootData(int x, int y);
         std::pair<int, int> receiveServerResponse();
@@ -36,10 +36,8 @@ namespace game
         explicit Game(sf::RenderWindow &window, sf::RectangleShape background, std::vector<std::vector<Cell>> map);
         void initMapEnemy();
         void drawMaps(sf::RenderWindow& window);
-        ShootCoordinates shoot(sf::RenderWindow& window);
+        ShootCoordinates shoot(sf::RenderWindow &window, int *x, int*y);
     };
-
-
 }
 
 #endif //COURSE_WORK_GAME_H
