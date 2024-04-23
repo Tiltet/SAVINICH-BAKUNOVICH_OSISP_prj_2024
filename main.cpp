@@ -49,7 +49,8 @@ struct option long_options[] =
     }
     else if (c_option == 1)
     {
-        user_client();
+        //user_client();
+        interfaceTest();
         return -1;
     }
     else

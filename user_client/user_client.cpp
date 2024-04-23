@@ -144,6 +144,7 @@ int user_client() {
                 fgets(buffer, BUFFER_SIZE, stdin);
                 //buffer[0] = toupper(buffer[0]);
             }
+
             buffer[strcspn(buffer, "\n")] = '\0';
             send_message(clientSocket, buffer);
             int x, y = 0;
@@ -160,16 +161,8 @@ int user_client() {
                 player2Board[y][x] = '0';
                 //send_message(clientSocket, "Miss");
             }
-
-//            receive_message(clientSocket, buffer);
-//            if (player1Board[y][x] == 'S') {
-//                player2Board[y][x] = 'X';
-//                send_message(clientSocket, "Hit");
-//            } else {
-//                player2Board[y][x] = '0';
-//                send_message(clientSocket, "Miss");
-//            }
             currentPlayer = 1 + currentPlayer;
+
         } else {
             int x, y = 0;
             receive_message(clientSocket, buffer);
@@ -185,40 +178,6 @@ int user_client() {
             }
             currentPlayer = 1 - currentPlayer;
         }
-
-        // Ход игрока
-        //printf("Your turn: ");
-
-
-//        fgets(buffer, BUFFER_SIZE, stdin);
-//        while (!is_valid_coordinate(buffer)) {
-//            printf("Введенные координаты являются недопустимыми.\n", buffer);
-//            fgets(buffer, BUFFER_SIZE, stdin);
-//            buffer[0] = toupper(buffer[0]);
-//        }
-//        buffer[strcspn(buffer, "\n")] = '\0';
-//        send_message(clientSocket, buffer);
-//
-//        // Ожидание хода противника
-//        printf("Waiting for opponent's turn...\n");
-//        receive_message(clientSocket, buffer);
-//        printf("Opponent's turn: %s\n", buffer);
-//        parse_shot(buffer, &x, &y);
-//        if (player1Board[y][x] == 'S') {
-//            player1Board[y][x] = 'X';
-//            send_message(clientSocket, "Hit");
-//        } else {
-//            player1Board[y][x] = '0';
-//            send_message(clientSocket, "Miss");
-//        }
-//
-//        receive_message(clientSocket, buffer);
-//        printf("%s\n", buffer);
-//        if (strcmp("Hit", buffer) == 0) {
-//            player2Board[y][x] = 'X';
-//        } else {
-//            player2Board[y][x] = '0';
-//        }
 
         print_board(player1Board, player2Board);
     }

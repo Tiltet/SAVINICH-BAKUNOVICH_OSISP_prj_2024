@@ -5,6 +5,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <time.h>
+#include <iostream>
+#include "../connection_funcs/con_funcs.h"
 
 #define BUFFER_SIZE 1024
 
@@ -70,7 +72,7 @@ int server_host() {
 
     // Настройка адреса сервера
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(12345);
+    serverAddress.sin_port = htons(12346);
     serverAddress.sin_addr.s_addr = INADDR_ANY;
 
     // Привязка сокета к адресу сервера
@@ -78,6 +80,13 @@ int server_host() {
         printf("Bind failed\n");
         exit(1);
     }
+
+    char hostname[1024];
+    gethostname(hostname, sizeof(hostname));
+    //net_scan(hostname);
+    std::cout << "IP игры - " << getIpForOS(hostname) << std::endl;
+    std::cout << "Ожидание подключения клиента..." << std::endl;
+    printf("Waiting for clients to connect...\n");
 
     // Ожидание подключения клиента
     listen(serverSocket, 2);
@@ -90,10 +99,10 @@ int server_host() {
     printf("Waiting for player 2 to connect...\n");
     player2Socket = accept(serverSocket, NULL, NULL);
     printf("Player 2 connected\n");
-    send_message_s(player2Socket, "Connected to server. Game is starting...");
+    //send_message_s(player2Socket, "Connected to server. Game is starting...");
 
     // Игровой цикл
-    while (1) {
+    //while (1) {
 
         // Игровой цикл для текущей партии
         int currentPlayer = 0;
@@ -116,7 +125,6 @@ int server_host() {
                 send_message_s(player1Socket, "Player 2 turn: ");
 
 
-
                 receive_message_s(player2Socket, buffer);
                 printf("Player 2's turn: %s\n", buffer); // Для отладки
                 send_message_s(player1Socket, buffer);
@@ -124,7 +132,7 @@ int server_host() {
                 send_message_s(player2Socket, buffer);
                 currentPlayer = 1 - currentPlayer;
             }
-            sleep(3);
+            sleep(1);
         }
 
         // Отправка результатов игры игрокам
@@ -134,7 +142,7 @@ int server_host() {
         // Ожидание команды для начала новой партии
         receive_message_s(player1Socket, buffer);
         receive_message_s(player2Socket, buffer);
-    }
+  //  }
 
     // Закрытие соединений
     close(serverSocket);
