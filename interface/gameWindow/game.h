@@ -8,7 +8,6 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include <optional>
 #include "iostream"
 #include "../preparationWindow/preparation.h"
 #include "../../logicpart/logic.h"
@@ -36,7 +35,7 @@ namespace game
         explicit Game(sf::RenderWindow &window, sf::RectangleShape background, std::vector<std::vector<Cell>> map);
         void initMapEnemy();
         void drawMaps(sf::RenderWindow& window);
-        ShootCoordinates shoot(sf::RenderWindow &window) const;
+        ShootCoordinates shoot(sf::RenderWindow &window);
     };
 }
 

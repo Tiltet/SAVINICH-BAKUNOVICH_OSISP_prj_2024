@@ -15,8 +15,6 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
     this->gameMenu.addItem("Exit", 86, sf::Color::White);
     this->gameMenu.alignMenu(3);
 
-
-
     std::string currentText;
 
     sf::Texture texture_window_background;

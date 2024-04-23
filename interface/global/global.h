@@ -20,7 +20,7 @@ enum class CellState
 
 struct Cell
 {
-    CellState state;
+    CellState state = CellState::Empty;
     sf::RectangleShape shape;
 };
 

@@ -72,7 +72,7 @@ int server_host() {
 
     // Настройка адреса сервера
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(12346);
+    serverAddress.sin_port = htons(12345);
     serverAddress.sin_addr.s_addr = INADDR_ANY;
 
     // Привязка сокета к адресу сервера
