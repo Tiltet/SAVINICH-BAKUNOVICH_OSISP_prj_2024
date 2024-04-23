@@ -38,8 +38,6 @@ namespace game
         void drawMaps(sf::RenderWindow& window);
         ShootCoordinates shoot(sf::RenderWindow &window, int *x, int*y);
     };
-
-
 }
 
 #endif //COURSE_WORK_GAME_H

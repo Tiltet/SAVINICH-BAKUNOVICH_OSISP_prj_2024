@@ -8,6 +8,7 @@
 #include "../../logicpart/place/place.h"
 #include "../gameWindow/game.h"
 #include "../global/global.h"
+#include "../ipInputWindow/inputIp.h"
 #include "iostream"
 
 #ifndef COURSE_WORK_PREPARATION_H

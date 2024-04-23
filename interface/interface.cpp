@@ -2,6 +2,7 @@
 // Created by Тимофей Савинич on 19.03.24.
 //
 
+#include <unistd.h>
 #include "interface.h"
 
 const int gridSize = 10;
@@ -106,5 +107,7 @@ void interfaceTest()
         {
             window.close();
         }
+
+        sleep(1);
     }
 }
