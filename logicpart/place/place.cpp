@@ -5,14 +5,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "place.h"
 
 #define BOARD_SIZE 10
 #define SHIPS_COUNT 10
 
-typedef struct {
-    int size;
-    int count;
-} Ship;
+
 
 void initializeBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
     for (int i = 0; i < BOARD_SIZE; i++) {
@@ -100,6 +98,14 @@ void placeShips(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[]) {
                 direction = rand() % 2; // 0 - горизонтальное размещение, 1 - вертикальное размещение
             } while (!isValidPlacement2(board, row, col, direction, shipSize));
 
+            Ship ship;
+            ship.size = shipSize;
+            ship.count = 1;
+            ship.begin = row * BOARD_SIZE + col;
+            ship.isHorizontal = (direction == 0) ? true : false;
+
+            ships[i] = ship;
+
             placeShip(board, row, col, direction, shipSize);
         }
     }
@@ -114,8 +120,7 @@ void displayBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
     }
 }
 
-void place(int board[BOARD_SIZE][BOARD_SIZE]) {
-    //int board[BOARD_SIZE][BOARD_SIZE];
+Ship* place(int board[BOARD_SIZE][BOARD_SIZE]) {
     initializeBoard(board);
 
     Ship ships[SHIPS_COUNT] = {
@@ -127,4 +132,5 @@ void place(int board[BOARD_SIZE][BOARD_SIZE]) {
 
     placeShips(board, ships);
     displayBoard(board);
+    return ships;
 }

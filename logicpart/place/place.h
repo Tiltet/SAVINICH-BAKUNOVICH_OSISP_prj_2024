@@ -5,8 +5,14 @@
 #ifndef COURSE_WORK_PLACE_H
 #define COURSE_WORK_PLACE_H
 
+typedef struct {
+    int size;
+    int count;
+    int begin;
+    bool isHorizontal;
+} Ship;
 
-void place(int board[10][10]);
+Ship* place(int board[10][10]);
 void displayBoard(int board[10][10]);
 
 

@@ -3,11 +3,13 @@
 //
 
 #include "preparation.h"
+#include "../../logicpart/place/place.h"
 #include <unistd.h>
 #include "../../user_client/user_client.h"
 
 pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape background, menu::Menu gameMenu) : gameMenu(std::move(gameMenu))
 {
+
     this->gameMenu.setTitle("Menu", 144, sf::Color::White);
     this->gameMenu.addItem("Auto", 86, sf::Color::White);
     this->gameMenu.addItem("Manual", 86, sf::Color::White);
@@ -26,7 +28,8 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
     background.setTexture(&texture_window_background);
 
     initMap();
-    drawShips(this->map);
+    Ship ships[10];
+    drawShips(this->map, ships);
 
     int check;
     while (window.isOpen())
@@ -56,7 +59,7 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
                         case 0:
                             std::cout << "Auto" << std::endl;
                             clearMap();
-                            drawShips(this->map);
+                            drawShips(this->map, ships);
                             check = 0;
                             break;
                         case 1:
@@ -99,7 +102,7 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
             }
 
 
-            game::Game(window, background, this->map);
+            game::Game(window, background, this->map, ships);
             // ip::Ip(window, background);
             window.close();
         }
@@ -161,11 +164,11 @@ void pre::Preparation::drawMap(sf::RenderWindow &window)
     }
 }
 
-void pre::Preparation::drawShips(std::vector<std::vector<Cell>> &mapUser)
+void pre::Preparation::drawShips(std::vector<std::vector<Cell>> &mapUser, Ship *ships)
 {
     int map[10][10] = {0};
 
-    place(map);
+    ships = place(map);
 
     for (int row = 0; row < 10; ++row)
     {

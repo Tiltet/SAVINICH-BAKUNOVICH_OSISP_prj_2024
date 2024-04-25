@@ -27,7 +27,7 @@ namespace pre
         void initMap();
         void clearMap();
         void drawMap(sf::RenderWindow& window);
-        static void drawShips(std::vector<std::vector<Cell>>& mapUser);
+        static void drawShips(std::vector<std::vector<Cell>> &mapUser, Ship *ships);
     };
 }
 

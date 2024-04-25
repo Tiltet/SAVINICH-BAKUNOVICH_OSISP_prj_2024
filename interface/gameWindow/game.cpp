@@ -37,7 +37,7 @@ void add_letter_and_int(char *buffer, char letter, int number)
     snprintf(buffer, 2, "%c%d", letter, number);
 }
 
-game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::vector<std::vector<Cell>> map)
+game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::vector<std::vector<Cell>> map, Ship *ships)
 {
     char ip_address[16];
     char buffer[BUFFER_SIZE];
@@ -136,7 +136,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                     cell.state = CellState::Hit;
                     cell.shape.setFillColor(sf::Color::Green);
                     std::cout << "Отправлено на сервер: Hit" << std::endl;
-                    if (!checkKilled(x, y))
+                    if (!isShipDestroyed(ships, x, y))
                     {
                         std::cout << "Отправлено на сервер: Hit" << std::endl;
                         send_message(clientSocket, "Hit");
@@ -283,19 +283,51 @@ game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window) const
     return coordinates;
 }
 
-bool game::Game::checkKilled(int x, int y) {
-    if ((x < 9) && (this->mapUser[x+1][y].state == CellState::Empty || this->mapUser[x+1][y].state == CellState::Killed))
-    {
-        if ((x > 0) && (this->mapUser[x-1][y].state == CellState::Empty || this->mapUser[x-1][y].state == CellState::Killed))
-        {
-            if ((y < 9) && (this->mapUser[x][y+1].state == CellState::Empty || this->mapUser[x][y+1].state == CellState::Killed))
-            {
-                if ((y > 0) && (this->mapUser[x][y-1].state == CellState::Empty || this->mapUser[x][y-1].state == CellState::Killed))
-                {
-                    return true;
+bool::game::Game::areAllShipsDestroyed(Ship ships[], int shipCount) {
+    for (int i = 0; i < shipCount; i++) {
+        Ship ship = ships[i];
+        int size = ship.size;
+        int begin = ship.begin;
+        bool isHorizontal = ship.isHorizontal;
+
+        int row = begin / 10;
+        int col = begin % 10;
+
+        if (isHorizontal) {
+            for (int j = 0; j < size; j++) {
+                if (this->mapUser[row][col + j].state != CellState::Killed) {
+                    return false;
+                }
+            }
+        } else {
+            for (int j = 0; j < size; j++) {
+                if (this->mapUser[row + j][col].state != CellState::Killed) {
+                    return false;
                 }
             }
         }
     }
-    return false;
+
+    return true;
+}
+
+bool::game::Game::isShipDestroyed(Ship* ship, int x, int y) {
+    int size = ship->size;
+    bool isHorizontal = ship->isHorizontal;
+
+
+    if (isHorizontal) {
+        for (int j = 0; j < size; j++) {
+            if (this->mapUser[x][y + j].state != CellState::Killed) {
+                return false;
+            }
+        }
+    } else {
+        for (int j = 0; j < size; j++) {
+            if (this->mapUser[x + j][y].state != CellState::Killed) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
