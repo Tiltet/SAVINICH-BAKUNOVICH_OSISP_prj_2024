@@ -14,7 +14,8 @@ enum class CellState
     Empty,
     Ship,
     Hit,
-    Miss
+    Miss,
+    Killed
 };
 
 
