@@ -80,7 +80,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
     // Настройка адреса сервера
     struct sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(12345);
+    serverAddress.sin_port = htons(12346);
     serverAddress.sin_addr.s_addr = inet_addr(ip_address);
 
     // Подключение к серверу
@@ -274,35 +274,23 @@ game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window) const
         coordinates.x = rowEnemy;
         coordinates.y = colEnemy;
 
-        // Раскрываем опционал и выводим координаты выстрела в консоль
-        std::cout << "Координаты выстрела: ";
-        if (coordinates.x && coordinates.y)
-        {
-            std::cout << coordinates.x << " " << coordinates.y << std::endl;
-            std::sprintf(buffer, "%s%s", std::to_string(coordinates.x).c_str(), std::to_string(coordinates.y).c_str());
-            buffer[strcspn(buffer, "\n")] = '\0';
-
-            std::cout << buffer << std::endl;
-
-            send_message(clientSocket, buffer);
-
-            return coordinates;
-        }
-        else
-        {
-            std::cout << "Неправильные координат\n";
-        }
+        std::cout << coordinates.x << " " << coordinates.y << std::endl;
+        std::sprintf(buffer, "%s%s", std::to_string(coordinates.x).c_str(), std::to_string(coordinates.y).c_str());
+        buffer[strcspn(buffer, "\n")] = '\0';
+        std::cout << buffer << std::endl;
+        send_message(clientSocket, buffer);
     }
+    return coordinates;
 }
 
 bool game::Game::checkKilled(int x, int y) {
-    if (this->mapUser[x+1][y].state == CellState::Empty || this->mapUser[x+1][y].state == CellState::Killed)
+    if ((x < 9) && (this->mapUser[x+1][y].state == CellState::Empty || this->mapUser[x+1][y].state == CellState::Killed))
     {
-        if (this->mapUser[x-1][y].state == CellState::Empty || this->mapUser[x-1][y].state == CellState::Killed)
+        if ((x > 0) && (this->mapUser[x-1][y].state == CellState::Empty || this->mapUser[x-1][y].state == CellState::Killed))
         {
-            if (this->mapUser[x][y+1].state == CellState::Empty || this->mapUser[x][y+1].state == CellState::Killed)
+            if ((y < 9) && (this->mapUser[x][y+1].state == CellState::Empty || this->mapUser[x][y+1].state == CellState::Killed))
             {
-                if (this->mapUser[x][y-1].state == CellState::Empty || this->mapUser[x][y-1].state == CellState::Killed)
+                if ((y > 0) && (this->mapUser[x][y-1].state == CellState::Empty || this->mapUser[x][y-1].state == CellState::Killed))
                 {
                     return true;
                 }
