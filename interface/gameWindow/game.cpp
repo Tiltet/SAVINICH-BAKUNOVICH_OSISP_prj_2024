@@ -11,6 +11,7 @@
 #define SERVER_IP "127.0.0.1"
 #define PORT 8082
 #define BUFFER_SIZE 1024
+#define SHIPS 10
 
 const int gridSize = 10;
 const int cellSize = 60;
@@ -80,7 +81,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
     // Настройка адреса сервера
     struct sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(12346);
+    serverAddress.sin_port = htons(12345);
     serverAddress.sin_addr.s_addr = inet_addr(ip_address);
 
     // Подключение к серверу
@@ -109,7 +110,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
         currentPlayer = 1;
         std::cout << "Ходит вторым\n" << std::endl;
     }
-
+    int killed = 0;
     while (window.isOpen())
     {
         sf::Event event;
@@ -156,6 +157,8 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                 }
 
                 std::cout << "ОЖИДАНИЕ ЗАКОНЧЕНО\n\n" << std::endl;
+                receive_message(clientSocket, buffer);
+                printf("Status: %s", buffer);
                 currentPlayer = 0;
             }
             else
@@ -198,10 +201,19 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                             cell.state = CellState::Killed;
                             cell.shape.setFillColor(sf::Color::Red);
                             std::cout << "Получено с сервера: Killed" << std::endl;
+                            killed++;
                         }
 
                         std::cout << "ВЫСТРЕЛ ЗАВЕРШЕН\n" << std::endl;
-
+                        if (killed == 10) {
+                            send_message(clientSocket, "Win");
+                            receive_message(clientSocket, buffer);
+                            printf("Status: %s", buffer);
+                        } else {
+                            send_message(clientSocket, "Continue");
+                            receive_message(clientSocket, buffer);
+                            printf("Status: %s", buffer);
+                        }
                         currentPlayer = 1;
                         //sound.play();
                     }
