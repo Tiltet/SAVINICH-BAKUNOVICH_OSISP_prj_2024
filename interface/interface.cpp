@@ -2,154 +2,112 @@
 // Created by Тимофей Савинич on 19.03.24.
 //
 
-#include <SFML/Graphics.hpp>
+#include <unistd.h>
 #include "interface.h"
 
 const int gridSize = 10;
 const int cellSize = 45;
 
-// 1240 - ширина
-// 720 - высота
-
-// Функция, котрая отрисовывает игровые
-void drawMap(sf::RenderWindow& window, const std::vector<std::vector<Cell>>& map)
+void interfaceTest()
 {
-    sf::Color colorBorder(0, 73, 194);
-    sf::Color colorCell(202, 237, 247);
+    setGlobalFont();
+    setGlobalScreenSize();
 
-    for (int row = 0; row < gridSize; ++row)
+/*    sf::SoundBuffer soundBuffer;
+    if (!soundBuffer.loadFromFile("../interface/sounds/goToMenu.mp3"))
     {
-        for (int col = 0; col < gridSize; ++col)
-        {
-            const Cell& cell = map[row][col];
-            window.draw(cell.shape);
-        }
-    }
-}
-
-// Функции ВЫСТРЕЛА
-ShootCoordinates shoot(sf::RenderWindow& window, std::vector<std::vector<Cell>>& map)
-{
-    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-    sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
-    ShootCoordinates coordinates;
-
-    // Считаем номер колонки и строки в поле Enemy
-    int colEnemy = (worldPos.x - 740) / cellSize;
-    int rowEnemy = (worldPos.y - 120) / cellSize;
-
-    if (colEnemy >= 0 && colEnemy < gridSize && rowEnemy >= 0 && rowEnemy < gridSize)
-    {
-        Cell& cell = map[rowEnemy][colEnemy];
-
-        if (cell.state == CellState::Empty)
-        {
-            cell.state = CellState::Miss;
-            cell.shape.setFillColor(sf::Color::Blue);
-            std::cout << "miss" << std::endl;
-            std::cout << "Row = " << rowEnemy << std::endl;
-            std::cout << "Col = " << colEnemy << std::endl;
-        }
-        else if (cell.state == CellState::Ship)
-        {
-            cell.state = CellState::Hit;
-            cell.shape.setFillColor(sf::Color::Red);
-            std::cout << "hit" << std::endl;
-            std::cout << "Row = " << rowEnemy << std::endl;
-            std::cout << "Col = " << colEnemy << std::endl;
-        }
-        coordinates.x = rowEnemy;
-        coordinates.y = colEnemy;
+        return;
     }
 
-    // Раскрываем опционал и выводим координаты выстрела в консоль
-    std::cout << "Координаты выстрела x: ";
-    if (coordinates.x)
-    {
-        std::cout << *coordinates.x;
-    }
-    else
-    {
-        std::cout << "N/A";
-    }
+    sf::Sound sound;
+    sound.setBuffer(soundBuffer);*/
 
-    if (coordinates.y)
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Sea Battle", sf::Style::Fullscreen);
+    window.setMouseCursorVisible(false);
+
+    sf::RectangleShape background(sf::Vector2f(globalScreenWigth, globalScreenHeight));
+    sf::Texture texture_window_background1;
+    if (!texture_window_background1.loadFromFile("../interface/img/background.jpg"))
     {
-        std::cout << *coordinates.y;
-    }
-    else
-    {
-        std::cout << "N/A";
+        return;
     }
 
-    return coordinates;
-}
+    background.setTexture(&texture_window_background1);
 
-// ОСНОВНАЯ ФУНКЦИЯ ИНТЕРФЕЙСА
-void interface()
-{
-    sf::RenderWindow window(sf::VideoMode(1240, 720), "Sea Battle", sf::Style::Titlebar | sf::Style::Close);
-    sf::RectangleShape background(sf::Vector2f(window.getSize().x, window.getSize().y));
-    background.setFillColor(sf::Color(154, 215, 254));
+    menu::Menu menu(globalScreenWigth / 2, globalScreenWigth / 10);
 
-    std::vector<std::vector<Cell>> mapUser(gridSize, std::vector<Cell>(gridSize));      // поле User
-    std::vector<std::vector<Cell>> mapEnemy(gridSize, std::vector<Cell>(gridSize));     // поле Enemy
+    menu.setTitle("Sea Battle", 144, sf::Color::White);
+    menu.addItem("Classic", 86, sf::Color::White);
+    menu.addItem("Fun Mode", 86, sf::Color::White);
+    menu.addItem("Exit", 86, sf::Color::White);
+    menu.alignMenu(3);
 
-    // Проходим по полю User
-    for (int row = 0; row < gridSize; ++row)
-    {
-        for (int col = 0; col < gridSize; ++col)
-        {
-            Cell& cell = mapUser[row][col];     // текущая клетка
-            cell.state = CellState::Empty;      // ставим статус Empty
+    int check = 0;
 
-            cell.shape.setSize(sf::Vector2f(cellSize, cellSize));                   // размер
-            cell.shape.setOutlineThickness(3.f);                                 // границы
-            cell.shape.setFillColor(sf::Color::White);                              // фон
-            cell.shape.setOutlineColor(sf::Color::Black);                           // цвет границ
-            cell.shape.setPosition(col * cellSize + 50, row * cellSize + 120);      // позиция
-        }
-    }
-
-    for (int row = 0; row < gridSize; ++row)
-    {
-        for (int col = 0; col < gridSize; ++col)
-        {
-            Cell& cell = mapEnemy[row][col];
-            cell.state = CellState::Empty;
-
-            cell.shape.setSize(sf::Vector2f(cellSize, cellSize));
-            cell.shape.setOutlineThickness(3.f);
-            cell.shape.setFillColor(sf::Color::White);
-            cell.shape.setOutlineColor(sf::Color::Black);
-            cell.shape.setPosition(col * cellSize + 740, row * cellSize + 120);
-        }
-    }
-
-    // Главный цикл приложения
     while (window.isOpen())
     {
-        sf::Event event{};
+        sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
             {
                 window.close();
             }
-            else if (event.type == sf::Event::MouseButtonPressed)   // событие нажатия на кнопку мыши
+            else if (event.type == sf::Event::KeyPressed)
             {
-                if (event.mouseButton.button == sf::Mouse::Left)    // если нажата левая клавиша мыши
+                if (event.key.code == sf::Keyboard::Up)
                 {
-                    shoot(window, mapEnemy);
+                    menu.moveUp();
+                    // sound.play();
+                }
+                else if (event.key.code == sf::Keyboard::Down)
+                {
+                    menu.moveDown();
+                    // sound.play();
+                }
+                else if (event.key.code == sf::Keyboard::Return)
+                {
+                    int selectedItemIndex = menu.getSelectedItemIndex();
+                    switch (selectedItemIndex)
+                    {
+                        case 0:
+                            std::cout << "Start Classic Mode" << std::endl;
+                            check = 1;
+                            break;
+                        case 1:
+                            //TODO Fun Mode
+                            std::cout << "Start Fun Mode" << std::endl;
+                            window.close();
+                            break;
+                        case 2:
+                            std::cout << "Exit" << std::endl;
+                            window.close();
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
 
+        if (check == 0)
+        {
+            window.clear();
+            window.draw(background);
+            menu.draw(window);
+            window.display();
+        }
+        else if (check == 1)
+        {
+            pre::Preparation preparation(window, background, menu::Menu
+            (globalScreenWigth / 5, globalScreenHeight / 5));
+            window.close();
+        }
+        else
+        {
+            window.close();
+        }
 
-        window.clear();
-        window.draw(background);
-        drawMap(window, mapUser);   // функции отрисовки полей: передаем поле, в функции отрисовываем в соответствии со всеми параметрами
-        drawMap(window, mapEnemy);
-        window.display();
+        sleep(1);
     }
 }

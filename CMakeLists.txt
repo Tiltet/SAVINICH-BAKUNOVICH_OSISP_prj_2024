@@ -4,16 +4,25 @@ project(Course_Work)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(SeaBattle main.cpp
-        server/server.cpp
-        server/server.h
-        client/client.h
-        client/client.cpp
-        server/server_v2.cpp
-        utilities/func.cpp
-        utilities/func.h
-        client/client_v2.cpp
         logicpart/logic.cpp
         logicpart/logic.h
+        hosting/server_host_version.cpp
+        user_client/user_client.cpp
+        connection_funcs/con_funcs.cpp
+        interface/interface.cpp
+        logicpart/place/place.cpp
+        logicpart/place/place.h
+        interface/menuBlock/menu.h
+        interface/menuBlock/menu.cpp
+        interface/preparationWindow/preparation.cpp
+        interface/preparationWindow/preparation.h
+        interface/global/global.cpp
+        interface/global/global.h
+        interface/gameWindow/game.h
+        interface/gameWindow/game.cpp
+        hosting/server_host_version.cpp
+        interface/ipInputWindow/inputIp.cpp
+        interface/ipInputWindow/inputIp.h
 )
 
 include_directories(/usr/local/include)
