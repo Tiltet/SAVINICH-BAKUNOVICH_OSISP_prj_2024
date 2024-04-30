@@ -203,7 +203,6 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                         std::cout << "ВЫСТРЕЛ ЗАВЕРШЕН\n" << std::endl;
 
                         currentPlayer = 1;
-                        // sleep(1);
                         //sound.play();
                     }
                 }
@@ -257,6 +256,7 @@ void game::Game::drawMaps(sf::RenderWindow& window)
     }
 }
 
+// ФУНКЦИЯ ВЫСТРЕЛА
 game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window) const
 {
     ShootCoordinates coordinates{};
@@ -274,23 +274,31 @@ game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window) const
         coordinates.x = rowEnemy;
         coordinates.y = colEnemy;
 
-        std::cout << coordinates.x << " " << coordinates.y << std::endl;
-        std::sprintf(buffer, "%s%s", std::to_string(coordinates.x).c_str(), std::to_string(coordinates.y).c_str());
-        buffer[strcspn(buffer, "\n")] = '\0';
-        std::cout << buffer << std::endl;
-        send_message(clientSocket, buffer);
+        if (this->mapUser[coordinates.x][coordinates.y].state == CellState::Empty)
+        {
+            std::cout << coordinates.x << " " << coordinates.y << std::endl;
+            std::sprintf(buffer, "%s%s", std::to_string(coordinates.x).c_str(), std::to_string(coordinates.y).c_str());
+            buffer[strcspn(buffer, "\n")] = '\0';
+            std::cout << buffer << std::endl;
+            send_message(clientSocket, buffer);
+        }
+        else
+        {
+            game::Game::shoot(window);
+        }
     }
     return coordinates;
 }
 
-bool game::Game::checkKilled(int x, int y) {
-    if ((x < 9) && (this->mapUser[x+1][y].state == CellState::Empty || this->mapUser[x+1][y].state == CellState::Killed))
+bool game::Game::checkKilled(int x, int y)
+{
+    if ((x < 9) && (this->mapUser[x+1][y].state == CellState::Empty || this->mapUser[x+1][y].state == CellState::Killed || this->mapUser[x+1][y].state == CellState::Hit))
     {
-        if ((x > 0) && (this->mapUser[x-1][y].state == CellState::Empty || this->mapUser[x-1][y].state == CellState::Killed))
+        if ((x > 0) && (this->mapUser[x-1][y].state == CellState::Empty || this->mapUser[x-1][y].state == CellState::Killed || this->mapUser[x-1][y].state == CellState::Hit))
         {
-            if ((y < 9) && (this->mapUser[x][y+1].state == CellState::Empty || this->mapUser[x][y+1].state == CellState::Killed))
+            if ((y < 9) && (this->mapUser[x][y+1].state == CellState::Empty || this->mapUser[x][y+1].state == CellState::Killed || this->mapUser[x][y+1].state == CellState::Hit))
             {
-                if ((y > 0) && (this->mapUser[x][y-1].state == CellState::Empty || this->mapUser[x][y-1].state == CellState::Killed))
+                if ((y > 0) && (this->mapUser[x][y-1].state == CellState::Empty || this->mapUser[x][y-1].state == CellState::Killed || this->mapUser[x][y-1].state == CellState::Hit))
                 {
                     return true;
                 }
