@@ -80,7 +80,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
     // Настройка адреса сервера
     struct sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(12346);
+    serverAddress.sin_port = htons(12345);
     serverAddress.sin_addr.s_addr = inet_addr(ip_address);
 
     // Подключение к серверу
