@@ -14,13 +14,14 @@ enum class CellState
     Empty,
     Ship,
     Hit,
-    Miss
+    Miss,
+    Killed
 };
 
 
 struct Cell
 {
-    CellState state;
+    CellState state = CellState::Empty;
     sf::RectangleShape shape;
 };
 

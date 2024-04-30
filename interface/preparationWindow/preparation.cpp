@@ -15,18 +15,6 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
     this->gameMenu.addItem("Exit", 86, sf::Color::White);
     this->gameMenu.alignMenu(3);
 
-    sf::Text inputText;
-    inputText.setFont(globalFont);
-    inputText.setCharacterSize(24);
-    inputText.setFillColor(sf::Color::Black);
-    inputText.setPosition(300, 300);
-
-    sf::RectangleShape textBox;
-    textBox.setSize(sf::Vector2f(300, 48)); // Задайте нужные значения ширины и высоты
-    textBox.setPosition(300, 300);
-    textBox.setFillColor(sf::Color::White);
-    window.setMouseCursorVisible(true);
-
     std::string currentText;
 
     sf::Texture texture_window_background;
@@ -111,11 +99,10 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
             }
 
 
-            // game::Game(window, background, this->map);
-            ip::Ip(window, background);
+            game::Game(window, background, this->map);
+            // ip::Ip(window, background);
             window.close();
         }
-
         window.clear();
         window.draw(background);
         this->gameMenu.draw(window);
