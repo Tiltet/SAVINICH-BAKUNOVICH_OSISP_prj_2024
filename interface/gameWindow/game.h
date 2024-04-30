@@ -11,7 +11,6 @@
 #include "iostream"
 #include "../preparationWindow/preparation.h"
 #include "../../logicpart/logic.h"
-#include "../../logicpart/place/place.h"
 
 namespace game
 {
@@ -29,14 +28,15 @@ namespace game
         std::vector<std::vector<Cell>> mapEnemy;
         int clientSocket;
 
+        void sendShootData(int x, int y);
+        std::pair<int, int> receiveServerResponse();
+
     public:
         explicit Game(sf::RenderWindow &window, sf::RectangleShape background, std::vector<std::vector<Cell>> map);
         void initMapEnemy();
         void drawMaps(sf::RenderWindow& window);
         ShootCoordinates shoot(sf::RenderWindow &window) const;
         bool checkKilled(int x, int y);
-        bool areAllShipsDestroyed(Ship ships[], int shipCount);
-        bool isShipDestroyed(Ship *ship, int x, int y);
     };
 }
 

@@ -3,13 +3,11 @@
 //
 
 #include "preparation.h"
-#include "../../logicpart/place/place.h"
 #include <unistd.h>
 #include "../../user_client/user_client.h"
 
 pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape background, menu::Menu gameMenu) : gameMenu(std::move(gameMenu))
 {
-
     this->gameMenu.setTitle("Menu", 144, sf::Color::White);
     this->gameMenu.addItem("Auto", 86, sf::Color::White);
     this->gameMenu.addItem("Manual", 86, sf::Color::White);
@@ -166,6 +164,8 @@ void pre::Preparation::drawMap(sf::RenderWindow &window)
 void pre::Preparation::drawShips(std::vector<std::vector<Cell>> &mapUser)
 {
     int map[10][10] = {0};
+
+    place(map);
 
     for (int row = 0; row < 10; ++row)
     {
