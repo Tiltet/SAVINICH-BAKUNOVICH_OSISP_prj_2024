@@ -217,6 +217,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
     }
 }
 
+
 void game::Game::initMapEnemy()
 {
     std::vector<std::vector<Cell>> mapUser(10, std::vector<Cell>(10));

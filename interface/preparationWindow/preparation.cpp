@@ -28,8 +28,7 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
     background.setTexture(&texture_window_background);
 
     initMap();
-    Ship ships[10];
-    drawShips(this->map, ships);
+    drawShips(this->map);
 
     int check;
     while (window.isOpen())
@@ -59,7 +58,7 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
                         case 0:
                             std::cout << "Auto" << std::endl;
                             clearMap();
-                            drawShips(this->map, ships);
+                            drawShips(this->map);
                             check = 0;
                             break;
                         case 1:
@@ -102,7 +101,7 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
             }
 
 
-            game::Game(window, background, this->map, ships);
+            game::Game(window, background, this->map);
             // ip::Ip(window, background);
             window.close();
         }
@@ -164,11 +163,9 @@ void pre::Preparation::drawMap(sf::RenderWindow &window)
     }
 }
 
-void pre::Preparation::drawShips(std::vector<std::vector<Cell>> &mapUser, Ship *ships)
+void pre::Preparation::drawShips(std::vector<std::vector<Cell>> &mapUser)
 {
     int map[10][10] = {0};
-
-    ships = place(map);
 
     for (int row = 0; row < 10; ++row)
     {
