@@ -292,13 +292,13 @@ game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window) const
 
 bool game::Game::checkKilled(int x, int y)
 {
-    if ((x < 9) && (this->mapUser[x+1][y].state == CellState::Empty || this->mapUser[x+1][y].state == CellState::Killed || this->mapUser[x+1][y].state == CellState::Hit))
+    if ((x == 9) || (this->mapUser[x+1][y].state == CellState::Empty || this->mapUser[x+1][y].state == CellState::Killed || this->mapUser[x+1][y].state == CellState::Hit))
     {
-        if ((x > 0) && (this->mapUser[x-1][y].state == CellState::Empty || this->mapUser[x-1][y].state == CellState::Killed || this->mapUser[x-1][y].state == CellState::Hit))
+        if ((x == 0) || (this->mapUser[x-1][y].state == CellState::Empty || this->mapUser[x-1][y].state == CellState::Killed || this->mapUser[x-1][y].state == CellState::Hit))
         {
-            if ((y < 9) && (this->mapUser[x][y+1].state == CellState::Empty || this->mapUser[x][y+1].state == CellState::Killed || this->mapUser[x][y+1].state == CellState::Hit))
+            if ((y == 9) || (this->mapUser[x][y+1].state == CellState::Empty || this->mapUser[x][y+1].state == CellState::Killed || this->mapUser[x][y+1].state == CellState::Hit))
             {
-                if ((y > 0) && (this->mapUser[x][y-1].state == CellState::Empty || this->mapUser[x][y-1].state == CellState::Killed || this->mapUser[x][y-1].state == CellState::Hit))
+                if ((y == 0) || (this->mapUser[x][y-1].state == CellState::Empty || this->mapUser[x][y-1].state == CellState::Killed || this->mapUser[x][y-1].state == CellState::Hit))
                 {
                     return true;
                 }
