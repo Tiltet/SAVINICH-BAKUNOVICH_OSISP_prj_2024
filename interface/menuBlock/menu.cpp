@@ -4,7 +4,7 @@
 
 #include "menu.h"
 
-game::GameMenu::GameMenu(float x, float y)
+menu::Menu::Menu(float x, float y)
 {
     this->menu_X = x;
     this->menu_Y = y;
@@ -12,7 +12,7 @@ game::GameMenu::GameMenu(float x, float y)
     this->padding = 0;
 }
 
-void game::GameMenu::setTitle(const std::string &title, int characterSize, const sf::Color &color)
+void menu::Menu::setTitle(const std::string &title, int characterSize, const sf::Color &color)
 {
     titleText.setFont(font);
     titleText.setString(title);
@@ -26,7 +26,7 @@ void game::GameMenu::setTitle(const std::string &title, int characterSize, const
     this->padding = padding + float(characterSize);
 }
 
-void game::GameMenu::draw(sf::RenderWindow &window)
+void menu::Menu::draw(sf::RenderWindow &window)
 {
     window.draw(titleText);
     for (const auto& menuItem : menuItems)
@@ -35,7 +35,7 @@ void game::GameMenu::draw(sf::RenderWindow &window)
     }
 }
 
-void game::GameMenu::addItem(const std::string &itemText, int characterSize, const sf::Color &color)
+void menu::Menu::addItem(const std::string &itemText, int characterSize, const sf::Color &color)
 {
     sf::Text menuItem;
     sf::Text& lastItem = menuItems.back();
@@ -56,12 +56,12 @@ void game::GameMenu::addItem(const std::string &itemText, int characterSize, con
     this->menuItems.push_back(menuItem);
 }
 
-int game::GameMenu::getSelectedItemIndex() const
+int menu::Menu::getSelectedItemIndex() const
 {
     return selectedItemIndex;
 }
 
-void game::GameMenu::moveDown()
+void menu::Menu::moveDown()
 {
     if (selectedItemIndex < menuItems.size() - 1)
     {
@@ -71,7 +71,7 @@ void game::GameMenu::moveDown()
     }
 }
 
-void game::GameMenu::moveUp()
+void menu::Menu::moveUp()
 {
     if (selectedItemIndex > 0)
     {
@@ -81,7 +81,7 @@ void game::GameMenu::moveUp()
     }
 }
 
-void game::GameMenu::alignMenu(int posx)
+void menu::Menu::alignMenu(int posx)
 {
     float nullx = 0;
 

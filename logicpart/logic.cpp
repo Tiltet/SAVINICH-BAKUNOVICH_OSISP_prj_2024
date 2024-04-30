@@ -266,9 +266,8 @@ void check_numb(int *a, int start, int end) {
     }
 }
 
-void sendShotCoordinates(int client_socket) {
+void sendShotCoordinates(int client_socket, int x, int y) {
     char buffer[BUFFER_SIZE];
-    int x, y;
     // Запрашиваем координаты выстрела у пользователя
     printf("Введите координаты выстрела (x): ");
     //scanf("%d", &x);
@@ -280,7 +279,7 @@ void sendShotCoordinates(int client_socket) {
 //    // Проверяем, что координаты входят в допустимые пределы поля 10x10
 //    if (x < 0 || x > 9 || y < 0 || y > 9) {
 //        printf("Координаты выстрела должны быть в пределах от 0 до 9.\n");
-//        sendShotCoordinates(client_socket);
+//        sendShotCoordinates(clientSocket);
 //    }
 
     // Формируем сообщение с координатами выстрела

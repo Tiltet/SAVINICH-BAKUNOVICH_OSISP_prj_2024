@@ -38,5 +38,5 @@ std::string getIPLinux(char *hostname);
 
 std::string getIPMAC();
 
-void getIpForOS(char* hostname);
+std::string getIpForOS(char* hostname);
 #endif //COURSE_WORK_CON_FUNCS_H

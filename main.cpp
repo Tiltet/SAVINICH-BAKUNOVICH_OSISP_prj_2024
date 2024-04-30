@@ -1,20 +1,15 @@
 #include <iostream>
 #include <getopt.h>
 
-
 #include "interface/interface.h"
-#include "logicpart/logic.h"
-#include "server/hosting/server_host_version.h"
-#include "client/user_client/user_client.h"
+#include "hosting/server_host_version.h"
+#include "user_client/user_client.h"
 #include "logicpart/place/place.h"
-#include "server/server_v3.h"
 
 
 int main(int argc, char *argv[])
 {
-    // interface();
-    interfaceTest(); // начальная функция отрисовки интерфейса
-
+    // interfaceTest(); // начальная функция отрисовки интерфейса
     int option;
     int s_option = 0;
     int c_option = 0;
@@ -49,13 +44,14 @@ struct option long_options[] =
     if (s_option == 1)
     {
         std::cout << "Запускаем сервер..." << std::endl;
-        int num = server_v3();
+        int num = server_host();
         return num;
     }
     else if (c_option == 1)
     {
-        int num = client();
-        return num;
+        //user_client();
+        interfaceTest();
+        return -1;
     }
     else
     {

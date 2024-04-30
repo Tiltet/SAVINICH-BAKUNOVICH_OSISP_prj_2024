@@ -3,8 +3,10 @@
 //
 
 #include "preparation.h"
+#include <unistd.h>
+#include "../../user_client/user_client.h"
 
-pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape background, game::GameMenu gameMenu) : gameMenu(std::move(gameMenu))
+pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape background, menu::Menu gameMenu) : gameMenu(std::move(gameMenu))
 {
     this->gameMenu.setTitle("Menu", 144, sf::Color::White);
     this->gameMenu.addItem("Auto", 86, sf::Color::White);
@@ -12,6 +14,8 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
     this->gameMenu.addItem("Start", 86, sf::Color::White);
     this->gameMenu.addItem("Exit", 86, sf::Color::White);
     this->gameMenu.alignMenu(3);
+
+    std::string currentText;
 
     sf::Texture texture_window_background;
     if (!texture_window_background.loadFromFile("../interface/img/background2.jpg"))
@@ -53,28 +57,58 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
                             std::cout << "Auto" << std::endl;
                             clearMap();
                             drawShips(this->map);
-                            check = 1;
+                            check = 0;
                             break;
                         case 1:
-                            std::cout << "Start Fun Mode" << std::endl;
+                            //TODO Manual
+                            std::cout << "Manual" << std::endl;
+                            check = 1;
+                            break;
+                        case 2:
+                            std::cout << "Start" << std::endl;
                             check = 2;
                             break;
-                        case 3:
-                            std::cout << "Exit" << std::endl;
-                            window.close();
-                            break;
                         default:
+                            window.close();
                             break;
                     }
                 }
             }
         }
 
+        if (check == 2)
+        {
+
+            int map[10][10] = {0};
+            for (int row = 0; row < 10; ++row)
+            {
+                for (int col = 0; col < 10; ++col)
+                {
+                    Cell& cell = this->map[row][col];
+                    if (cell.state == CellState::Empty)
+                    {
+                        map[row][col] = 0;
+                    }
+                    else if (cell.state == CellState::Ship)
+                    {
+                        map[row][col] = 1;
+                    }
+                    std::cout << map[row][col] << " ";
+                }
+                std::cout << "\n";
+            }
+
+
+            game::Game(window, background, this->map);
+            // ip::Ip(window, background);
+            window.close();
+        }
         window.clear();
         window.draw(background);
         this->gameMenu.draw(window);
         drawMap(window);
         window.display();
+        sleep(1);
     }
 }
 
@@ -127,7 +161,7 @@ void pre::Preparation::drawMap(sf::RenderWindow &window)
     }
 }
 
-void pre::Preparation::drawShips(std::vector<std::vector<pre::Cell>> &mapUser)
+void pre::Preparation::drawShips(std::vector<std::vector<Cell>> &mapUser)
 {
     int map[10][10] = {0};
 
@@ -140,6 +174,7 @@ void pre::Preparation::drawShips(std::vector<std::vector<pre::Cell>> &mapUser)
             if (map[row][col] == 1)
             {
                 mapUser[row][col].shape.setFillColor(sf::Color::Red);
+                mapUser[row][col].state = CellState::Ship;
             }
         }
     }
