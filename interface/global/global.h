@@ -7,7 +7,6 @@
 
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "../global/global.h"
 
 enum class CellState
 {
@@ -26,7 +25,10 @@ struct Cell
 };
 
 extern sf::Font globalFont;
-extern unsigned int globalScreenWigth;
+extern sf::Color Grey;
+extern sf::Color Red;
+extern sf::Color Blue;
+extern unsigned int globalScreenWight;
 extern unsigned int globalScreenHeight;
 
 void setGlobalFont();

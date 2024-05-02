@@ -149,7 +149,7 @@ int server_host() {
                 send_message_s(player2Socket, buffer);
                 currentPlayer = 1 - currentPlayer;
             }
-            sleep(1);
+            // sleep(1);
         }
 
         // Отправка результатов игры игрокам

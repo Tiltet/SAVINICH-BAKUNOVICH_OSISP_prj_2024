@@ -4,7 +4,6 @@
 
 #include "preparation.h"
 #include <unistd.h>
-#include "../../user_client/user_client.h"
 
 pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape background, menu::Menu gameMenu) : gameMenu(std::move(gameMenu))
 {
@@ -93,9 +92,7 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
                     {
                         map[row][col] = 1;
                     }
-                    std::cout << map[row][col] << " ";
                 }
-                std::cout << "\n";
             }
 
 
@@ -128,7 +125,7 @@ void pre::Preparation::initMap()
             cell.shape.setOutlineThickness(3.f);
             cell.shape.setFillColor(sf::Color::White);
             cell.shape.setOutlineColor(sf::Color::Black);
-            cell.shape.setPosition(col * 60 + globalScreenWigth / 2, row * 60 + globalScreenHeight / 7);
+            cell.shape.setPosition(col * 60 + globalScreenWight / 2, row * 60 + globalScreenHeight / 7);
         }
     }
 }
@@ -173,7 +170,7 @@ void pre::Preparation::drawShips(std::vector<std::vector<Cell>> &mapUser)
         {
             if (map[row][col] == 1)
             {
-                mapUser[row][col].shape.setFillColor(sf::Color::Red);
+                mapUser[row][col].shape.setFillColor(Blue);
                 mapUser[row][col].state = CellState::Ship;
             }
         }
