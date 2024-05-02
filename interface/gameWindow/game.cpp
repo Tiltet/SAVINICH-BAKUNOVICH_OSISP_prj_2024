@@ -15,8 +15,6 @@
 const int gridSize = 10;
 const int cellSize = 60;
 
-
-
 void convert_string_to_ints(const char* string, int* first_int, int* second_int) {
     if (strlen(string) != 2) {
         printf("Строка должна содержать ровно две цифры.\n");
@@ -274,18 +272,11 @@ game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window) const
         coordinates.x = rowEnemy;
         coordinates.y = colEnemy;
 
-        if (this->mapUser[coordinates.x][coordinates.y].state == CellState::Empty)
-        {
-            std::cout << coordinates.x << " " << coordinates.y << std::endl;
-            std::sprintf(buffer, "%s%s", std::to_string(coordinates.x).c_str(), std::to_string(coordinates.y).c_str());
-            buffer[strcspn(buffer, "\n")] = '\0';
-            std::cout << buffer << std::endl;
-            send_message(clientSocket, buffer);
-        }
-        else
-        {
-            game::Game::shoot(window);
-        }
+        std::cout << coordinates.x << " " << coordinates.y << std::endl;
+        std::sprintf(buffer, "%s%s", std::to_string(coordinates.x).c_str(), std::to_string(coordinates.y).c_str());
+        buffer[strcspn(buffer, "\n")] = '\0';
+        std::cout << buffer << std::endl;
+        send_message(clientSocket, buffer);
     }
     return coordinates;
 }
