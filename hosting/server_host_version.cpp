@@ -107,6 +107,8 @@ int server_host() {
     send_message_s(player2Socket, "Player 1 turn: ");
         // Игровой цикл для текущей партии
         int currentPlayer = 0;
+        int kills1 = 0;
+        int kills2 = 0;
         while (1) {
 
             if (currentPlayer == 0) {
@@ -118,6 +120,15 @@ int server_host() {
 
                 send_message_s(player2Socket, buffer);
                 receive_message_s(player2Socket, buffer);
+                if (std::strcmp(buffer, "Killed") == 0) {
+                    kills1++;
+                    if (kills1 == 10) {
+                        printf("Player 1 Win.\n");
+                        close(player1Socket);
+                        close(player2Socket);
+                        break;
+                    }
+                }
                 send_message_s(player1Socket, buffer);
 
 
@@ -136,6 +147,15 @@ int server_host() {
                 printf("Player 2's turn: %s\n", buffer); // Для отладки
                 send_message_s(player1Socket, buffer);
                 receive_message_s(player1Socket, buffer);
+                if (std::strcmp(buffer, "Killed") == 0) {
+                    kills2++;
+                    if (kills2 == 10) {
+                        printf("Player 2 Win.\n");
+                        close(player1Socket);
+                        close(player2Socket);
+                        break;
+                    }
+                }
                 send_message_s(player2Socket, buffer);
 
                 receive_message_s(player1Socket, buffer);
@@ -148,7 +168,7 @@ int server_host() {
                 }
                 currentPlayer = 1 - currentPlayer;
             }
-            sleep(1);
+            // sleep(1);
         }
 
         // Отправка результатов игры игрокам
