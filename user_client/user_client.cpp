@@ -110,7 +110,7 @@ int user_client() {
     // Настройка адреса сервера
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons(12345);
-    serverAddress.sin_addr.s_addr = inet_addr("172.20.10.2");
+    serverAddress.sin_addr.s_addr = inet_addr("172.20.10.3");
 
     // Подключение к серверу
     if (connect(clientSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1) {
