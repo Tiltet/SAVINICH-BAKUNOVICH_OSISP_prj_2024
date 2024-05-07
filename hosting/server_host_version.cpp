@@ -120,6 +120,7 @@ int server_host() {
 
                 send_message_s(player2Socket, buffer);
                 receive_message_s(player2Socket, buffer);
+                printf("Buffer: %s\n", buffer);
                 if (std::strcmp(buffer, "Killed") == 0) {
                     kills1++;
                     if (kills1 == 10) {
@@ -128,17 +129,24 @@ int server_host() {
                         // close(player2Socket);
                         break;
                     }
+                    send_message_s(player1Socket, buffer);
+
+                } else if (std::strcmp(buffer, "Hit") == 0) {
+                    send_message_s(player1Socket, buffer);
+                } else {
+                    send_message_s(player1Socket, buffer);
+
+
+                    currentPlayer = 1 - currentPlayer;
                 }
-                send_message_s(player1Socket, buffer);
 
-
-                currentPlayer = 1 - currentPlayer;
             } else {
 
                 receive_message_s(player2Socket, buffer);
                 printf("Player 2's turn: %s\n", buffer); // Для отладки
                 send_message_s(player1Socket, buffer);
                 receive_message_s(player1Socket, buffer);
+                printf("Buffer: %s\n", buffer);
                 if (std::strcmp(buffer, "Killed") == 0) {
                     kills2++;
                     if (kills2 == 10) {
@@ -147,12 +155,18 @@ int server_host() {
                         // close(player2Socket);
                         break;
                     }
-                }
-                send_message_s(player2Socket, buffer);
+                    send_message_s(player2Socket, buffer);
 
-                currentPlayer = 1 - currentPlayer;
+                } else if (std::strcmp(buffer, "Hit") == 0) {
+                    send_message_s(player2Socket, buffer);
+                } else {
+                    send_message_s(player2Socket, buffer);
+
+                    currentPlayer = 1 - currentPlayer;
+                }
+
             }
-            sleep(1);
+            //sleep(1);
         }
 
         // Отправка результатов игры игрокам

@@ -113,7 +113,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
             {
                 std::cout << "ИГРОК ЖДЕТ" << std::endl;
                 window.setMouseCursorVisible(false);
-                receive_message(clientSocket, buffer);
+
                 printf("Wait: Буфер с сервера = %s\n", buffer);
 
                 game::ShootCoordinates coordinates{};
@@ -138,6 +138,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                         std::cout << "Отправлено на сервер: Killed" << std::endl;
                         drawKilledShip(coordinates.x,coordinates.y, this->mapUser);
                         send_message(clientSocket, "Killed");
+                        //currentPlayer = 0;
                     }
                 }
                 else
@@ -146,10 +147,11 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                     this->mapUser[coordinates.x][coordinates.y].shape.setFillColor(Grey);
                     std::cout << "Отправлено на сервер: Miss" << std::endl;
                     send_message(clientSocket, "Miss");
+                    currentPlayer = 0;
                 }
 
                 std::cout << "ОЖИДАНИЕ ЗАКОНЧЕНО\n\n" << std::endl;
-                currentPlayer = 0;
+
             }
             else
             {
@@ -172,7 +174,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                         {
                             std::cout << "Координа выстрела x = " << coordinates.x << std::endl;
                             std::cout << "Координа выстрела y = " << coordinates.y << std::endl;
-
+                            sleep(1);
                             receive_message(clientSocket, buffer);
                             printf("Shoot: Буфер с сервера = %s\n", buffer);
 
@@ -187,6 +189,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                                 this->mapEnemy[coordinates.x][coordinates.y].state = CellState::Miss;
                                 this->mapEnemy[coordinates.x][coordinates.y].shape.setFillColor(Grey);
                                 std::cout << "Получено с сервера: Miss" << std::endl;
+                                currentPlayer = 1;
                             }
                             else if (std::strcmp(buffer, "Killed") == 0)
                             {
@@ -194,6 +197,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                                 this->mapEnemy[coordinates.x][coordinates.y].shape.setFillColor(Red);
                                 std::cout << "Получено с сервера: Killed" << std::endl;
                                 drawKilledShip(coordinates.x,coordinates.y, this->mapEnemy);
+                                //currentPlayer = 1;
                             }
                             else if (std::strcmp(buffer, "Lose") == 0)
                             {
@@ -213,7 +217,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                             this->drawMaps(window);
                             window.display();
 
-                            currentPlayer = 1;
+
                             //sound.play();
                         }
                     }
