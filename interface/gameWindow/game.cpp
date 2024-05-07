@@ -114,14 +114,15 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                 std::cout << "ИГРОК ЖДЕТ" << std::endl;
                 window.setMouseCursorVisible(false);
 
+                receive_message(clientSocket, buffer);
                 printf("Wait: Буфер с сервера = %s\n", buffer);
+
 
                 game::ShootCoordinates coordinates{};
                 convert_string_to_ints(buffer, &coordinates.x, &coordinates.y);
 
                 std::cout << "Координата x после парса = " << coordinates.x << std::endl;
                 std::cout << "Координата y после парса = " << coordinates.y << std::endl;
-
 
                 if (this->mapUser[coordinates.x][coordinates.y].state == CellState::Ship)
                 {
@@ -174,7 +175,6 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                         {
                             std::cout << "Координа выстрела x = " << coordinates.x << std::endl;
                             std::cout << "Координа выстрела y = " << coordinates.y << std::endl;
-                            sleep(1);
                             receive_message(clientSocket, buffer);
                             printf("Shoot: Буфер с сервера = %s\n", buffer);
 

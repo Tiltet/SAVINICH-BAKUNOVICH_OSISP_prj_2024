@@ -10,62 +10,36 @@
 
 #define BUFFER_SIZE 1024
 
-void send_message_s(int socket, const char* message) {
-    if (send(socket, message, strlen(message), 0) == -1) {
+void send_message_s(int socket, const char* message)
+{
+    if (send(socket, message, strlen(message), 0) == -1)
+    {
         printf("Error sending message\n");
         exit(1);
     }
 }
 
-void receive_message_s(int socket, char* buffer) {
+void receive_message_s(int socket, char* buffer)
+{
     ssize_t bytesReceived = recv(socket, buffer, BUFFER_SIZE, 0);
-    if (bytesReceived == -1) {
+    if (bytesReceived == -1)
+    {
         printf("Error receiving message\n");
         exit(1);
     }
     buffer[bytesReceived] = '\0';
 }
 
-//void auto_place_ships(char board[10][10]) {
-//    // Генерация случайного расположения кораблей
-//    srand(time(NULL));
-//    int i, j;
-//    for (i = 0; i < 10; i++) {
-//        for (j = 0; j < 10; j++) {
-//            board[i][j] = '-';
-//        }
-//    }
-//    for (i = 0; i < 5; i++) {
-//        int dx = rand() % 10;
-//        int dy = rand() % 10;
-//        board[dx][dy] = 'S';
-//    }
-//}
-//
-//void print_board(char board[10][10]) {
-//    int i, j;
-//    printf("   ");
-//    for (i = 0; i < 10; i++) {
-//        printf("%d ", i);
-//    }
-//    printf("\n");
-//    for (i = 0; i < 10; i++) {
-//        printf("%d  ", i);
-//        for (j = 0; j < 10; j++) {
-//            printf("%c ", board[i][j]);
-//        }
-//        printf("\n");
-//    }
-//}
-
-int server_host() {
+int server_host()
+{
     int serverSocket, player1Socket, player2Socket;;
     struct sockaddr_in serverAddress, clientAddress;
     char buffer[BUFFER_SIZE];
 
     // Создание сокета
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (serverSocket == -1) {
+    if (serverSocket == -1)
+    {
         printf("Could not create socket\n");
         exit(1);
     }
@@ -76,7 +50,8 @@ int server_host() {
     serverAddress.sin_addr.s_addr = INADDR_ANY;
 
     // Привязка сокета к адресу сервера
-    if (bind(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1) {
+    if (bind(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1)
+    {
         printf("Bind failed\n");
         exit(1);
     }
@@ -102,7 +77,6 @@ int server_host() {
     send_message_s(player2Socket, "Connected to server. Game is starting...");
 
     // Игровой цикл
-    //while (1) {
     send_message_s(player1Socket, "Your turn: ");
     send_message_s(player2Socket, "Player 1 turn: ");
         // Игровой цикл для текущей партии
@@ -111,62 +85,66 @@ int server_host() {
         int kills2 = 0;
         while (1) {
 
-            if (currentPlayer == 0) {
-
-
+            if (currentPlayer == 0)
+            {
                 receive_message_s(player1Socket, buffer);
-                printf("Player 1's turn: %s\n", buffer); // Для отладки
-
+                printf("Player 1's turn: %s\n", buffer); // Для отkладки
 
                 send_message_s(player2Socket, buffer);
                 receive_message_s(player2Socket, buffer);
                 printf("Buffer: %s\n", buffer);
-                if (std::strcmp(buffer, "Killed") == 0) {
+                if (std::strcmp(buffer, "Killed") == 0)
+                {
                     kills1++;
-                    if (kills1 == 10) {
+                    if (kills1 == 10)
+                    {
                         printf("Player 1 Win.\n");
-                        // close(player1Socket);
-                        // close(player2Socket);
                         break;
                     }
                     send_message_s(player1Socket, buffer);
 
-                } else if (std::strcmp(buffer, "Hit") == 0) {
+                }
+                else if (std::strcmp(buffer, "Hit") == 0)
+                {
                     send_message_s(player1Socket, buffer);
-                } else {
+                }
+                else
+                {
                     send_message_s(player1Socket, buffer);
-
-
                     currentPlayer = 1 - currentPlayer;
                 }
 
-            } else {
-
+            }
+            else
+            {
                 receive_message_s(player2Socket, buffer);
                 printf("Player 2's turn: %s\n", buffer); // Для отладки
                 send_message_s(player1Socket, buffer);
                 receive_message_s(player1Socket, buffer);
                 printf("Buffer: %s\n", buffer);
-                if (std::strcmp(buffer, "Killed") == 0) {
+                if (std::strcmp(buffer, "Killed") == 0)
+                {
                     kills2++;
-                    if (kills2 == 10) {
+                    if (kills2 == 10)
+                    {
                         printf("Player 2 Win.\n");
-                        // close(player1Socket);
-                        // close(player2Socket);
                         break;
                     }
                     send_message_s(player2Socket, buffer);
 
-                } else if (std::strcmp(buffer, "Hit") == 0) {
+                }
+                else if (std::strcmp(buffer, "Hit") == 0)
+                {
                     send_message_s(player2Socket, buffer);
-                } else {
+                }
+                else
+                {
                     send_message_s(player2Socket, buffer);
-
                     currentPlayer = 1 - currentPlayer;
                 }
 
             }
-            //sleep(1);
+            sleep(1);
         }
 
         // Отправка результатов игры игрокам
@@ -174,6 +152,7 @@ int server_host() {
         {
             send_message_s(player1Socket, "Victory");
             send_message_s(player2Socket, "Lose");
+
         }
         else
         {
@@ -184,12 +163,11 @@ int server_host() {
         // Ожидание команды для начала новой партии
         receive_message_s(player1Socket, buffer);
         receive_message_s(player2Socket, buffer);
-  //  }
 
     // Закрытие соединений
-    // close(serverSocket);
-    // close(player1Socket);
-    // close(player2Socket);
+    close(serverSocket);
+    close(player1Socket);
+    close(player2Socket);
 
     return 0;
 }
