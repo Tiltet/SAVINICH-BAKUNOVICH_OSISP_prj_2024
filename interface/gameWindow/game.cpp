@@ -197,6 +197,11 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
 
                             std::cout << "ВЫСТРЕЛ ЗАВЕРШЕН\n" << std::endl;
 
+                            window.clear();
+                            window.draw(background);
+                            this->drawMaps(window);
+                            window.display();
+
                             currentPlayer = 1;
                             //sound.play();
                         }

@@ -152,7 +152,7 @@ int server_host() {
 
                 currentPlayer = 1 - currentPlayer;
             }
-            // sleep(1);
+            sleep(1);
         }
 
         // Отправка результатов игры игрокам

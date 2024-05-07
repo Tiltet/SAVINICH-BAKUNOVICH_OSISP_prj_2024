@@ -107,7 +107,5 @@ void interfaceTest()
         {
             window.close();
         }
-
-        sleep(1);
     }
 }
