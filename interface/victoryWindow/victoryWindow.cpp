@@ -9,12 +9,18 @@ victory::Victory::Victory(sf::RenderWindow& window, bool check)
 {
     this->check = check;
 
-    menu::Menu menu(100, 100);
+    menu::Menu menu(globalScreenWight / 2, globalScreenWight / 10);
 
-    menu.setTitle("Menu", 144, sf::Color::White);
-    menu.addItem("Auto", 86, sf::Color::White);
-    menu.addItem("Manual", 86, sf::Color::White);
-    menu.addItem("Start", 86, sf::Color::White);
+    if (check)
+    {
+        menu.setTitle("Victory", 144, sf::Color::White);
+    }
+    else
+    {
+        menu.setTitle("Lose", 144, sf::Color::White);
+    }
+
+    menu.addItem("Restart", 86, sf::Color::White);
     menu.addItem("Exit", 86, sf::Color::White);
     menu.alignMenu(3);
 
@@ -24,6 +30,8 @@ victory::Victory::Victory(sf::RenderWindow& window, bool check)
     {
         return;
     }
+
+    background.setTexture(&texture_window_background);
 
     while (window.isOpen())
     {
@@ -38,6 +46,7 @@ victory::Victory::Victory(sf::RenderWindow& window, bool check)
 
         window.clear();
         window.draw(background);
+        menu.draw(window);
         window.display();
     }
 }

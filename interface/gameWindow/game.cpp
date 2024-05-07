@@ -194,9 +194,15 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                                 this->mapEnemy[coordinates.x][coordinates.y].shape.setFillColor(Red);
                                 std::cout << "Получено с сервера: Killed" << std::endl;
                                 drawKilledShip(coordinates.x,coordinates.y, this->mapEnemy);
-
-                                bool check = true;
-                                victory::Victory(window, check);
+                            }
+                            else if (std::strcmp(buffer, "Lose") == 0)
+                            {
+                                victory::Victory(window, false);
+                                window.close();
+                            }
+                            else if (std::strcmp(buffer, "Victory") == 0)
+                            {
+                                victory::Victory(window, true);
                                 window.close();
                             }
 

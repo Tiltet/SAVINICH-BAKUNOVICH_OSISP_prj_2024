@@ -13,7 +13,8 @@ void interfaceTest()
     setGlobalFont();
     setGlobalScreenSize();
 
-/*    sf::SoundBuffer soundBuffer;
+
+    /*sf::SoundBuffer soundBuffer;
     if (!soundBuffer.loadFromFile("../interface/sounds/goToMenu.mp3"))
     {
         return;

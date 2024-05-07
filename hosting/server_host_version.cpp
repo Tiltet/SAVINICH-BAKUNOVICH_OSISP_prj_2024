@@ -124,8 +124,8 @@ int server_host() {
                     kills1++;
                     if (kills1 == 10) {
                         printf("Player 1 Win.\n");
-                        close(player1Socket);
-                        close(player2Socket);
+                        // close(player1Socket);
+                        // close(player2Socket);
                         break;
                     }
                 }
@@ -143,8 +143,8 @@ int server_host() {
                     kills2++;
                     if (kills2 == 10) {
                         printf("Player 2 Win.\n");
-                        close(player1Socket);
-                        close(player2Socket);
+                        // close(player1Socket);
+                        // close(player2Socket);
                         break;
                     }
                 }
@@ -156,8 +156,16 @@ int server_host() {
         }
 
         // Отправка результатов игры игрокам
-        send_message_s(player1Socket, "Game over!");
-        send_message_s(player2Socket, "Game over!");
+        if (kills1 == 10)
+        {
+            send_message_s(player1Socket, "Victory");
+            send_message_s(player2Socket, "Lose");
+        }
+        else
+        {
+            send_message_s(player1Socket, "Lose");
+            send_message_s(player2Socket, "Victory");
+        }
 
         // Ожидание команды для начала новой партии
         receive_message_s(player1Socket, buffer);
@@ -165,9 +173,9 @@ int server_host() {
   //  }
 
     // Закрытие соединений
-    close(serverSocket);
-    close(player1Socket);
-    close(player2Socket);
+    // close(serverSocket);
+    // close(player1Socket);
+    // close(player2Socket);
 
     return 0;
 }

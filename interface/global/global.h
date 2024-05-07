@@ -31,6 +31,8 @@ extern sf::Color Blue;
 extern unsigned int globalScreenWight;
 extern unsigned int globalScreenHeight;
 
+extern
+
 void setGlobalFont();
 void setGlobalScreenSize();
 
