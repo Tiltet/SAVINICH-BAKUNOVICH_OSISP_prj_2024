@@ -105,7 +105,6 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
         this->gameMenu.draw(window);
         drawMap(window);
         window.display();
-        sleep(1);
     }
 }
 

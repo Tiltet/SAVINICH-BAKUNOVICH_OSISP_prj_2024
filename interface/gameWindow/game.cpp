@@ -6,7 +6,6 @@
 #include "game.h"
 
 #define BUFFER_SIZE 1024
-#define SHIPS 10
 
 const int gridSize = 10;
 const int cellSize = 60;
@@ -150,8 +149,6 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                 }
 
                 std::cout << "ОЖИДАНИЕ ЗАКОНЧЕНО\n\n" << std::endl;
-                receive_message(clientSocket, buffer);
-                printf("Status: %s", buffer);
                 currentPlayer = 0;
             }
             else
@@ -199,6 +196,11 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                             }
 
                             std::cout << "ВЫСТРЕЛ ЗАВЕРШЕН\n" << std::endl;
+
+                            window.clear();
+                            window.draw(background);
+                            this->drawMaps(window);
+                            window.display();
 
                             currentPlayer = 1;
                             //sound.play();
