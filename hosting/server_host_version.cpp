@@ -132,14 +132,6 @@ int server_host() {
                 send_message_s(player1Socket, buffer);
 
 
-                receive_message_s(player1Socket, buffer);
-                if (std::strcmp(buffer, "Win") == 0) {
-                    send_message_s(player1Socket, "You are Won!");
-                    send_message_s(player2Socket, "You are lose :(");
-                } else {
-                    send_message_s(player1Socket, "Continue");
-                    send_message_s(player2Socket, "Continue");
-                }
                 currentPlayer = 1 - currentPlayer;
             } else {
 
@@ -158,14 +150,6 @@ int server_host() {
                 }
                 send_message_s(player2Socket, buffer);
 
-                receive_message_s(player1Socket, buffer);
-                if (std::strcmp(buffer, "Win") == 0) {
-                    send_message_s(player2Socket, "You are Won!");
-                    send_message_s(player1Socket, "You are lose :(");
-                } else {
-                    send_message_s(player1Socket, "Continue");
-                    send_message_s(player2Socket, "Continue");
-                }
                 currentPlayer = 1 - currentPlayer;
             }
             // sleep(1);

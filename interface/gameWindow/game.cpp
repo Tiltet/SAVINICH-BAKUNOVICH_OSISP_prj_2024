@@ -6,7 +6,6 @@
 #include "game.h"
 
 #define BUFFER_SIZE 1024
-#define SHIPS 10
 
 const int gridSize = 10;
 const int cellSize = 60;
@@ -150,8 +149,6 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                 }
 
                 std::cout << "ОЖИДАНИЕ ЗАКОНЧЕНО\n\n" << std::endl;
-                receive_message(clientSocket, buffer);
-                printf("Status: %s", buffer);
                 currentPlayer = 0;
             }
             else
@@ -203,33 +200,6 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                             currentPlayer = 1;
                             //sound.play();
                         }
-
-                        else if (std::strcmp(buffer, "Miss") == 0)
-                        {
-                            cell.state = CellState::Miss;
-                            cell.shape.setFillColor(sf::Color::Yellow);
-                            std::cout << "Получено с сервера: Miss" << std::endl;
-                        }
-                        else if (std::strcmp(buffer, "Killed") == 0)
-                        {
-                            cell.state = CellState::Killed;
-                            cell.shape.setFillColor(sf::Color::Red);
-                            std::cout << "Получено с сервера: Killed" << std::endl;
-                            killed++;
-                        }
-
-                        std::cout << "ВЫСТРЕЛ ЗАВЕРШЕН\n" << std::endl;
-                        if (killed == 10) {
-                            send_message(clientSocket, "Win");
-                            receive_message(clientSocket, buffer);
-                            printf("Status: %s", buffer);
-                        } else {
-                            send_message(clientSocket, "Continue");
-                            receive_message(clientSocket, buffer);
-                            printf("Status: %s", buffer);
-                        }
-                        currentPlayer = 1;
-                        //sound.play();
                     }
                 }
             }
