@@ -14,6 +14,7 @@
 #include "../global/global.h"
 #include "../../connection_funcs/con_funcs.h"
 #include "../../user_client/user_client.h"
+#include "../victoryWindow/vicrotyWindow.h"
 
 namespace game
 {

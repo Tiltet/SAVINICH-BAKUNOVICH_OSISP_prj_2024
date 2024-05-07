@@ -23,6 +23,8 @@ add_executable(SeaBattle main.cpp
         hosting/server_host_version.cpp
         interface/ipInputWindow/inputIp.cpp
         interface/ipInputWindow/inputIp.h
+        interface/victoryWindow/victoryWindow.cpp
+        interface/victoryWindow/vicrotyWindow.h
 )
 
 include_directories(/usr/local/include)

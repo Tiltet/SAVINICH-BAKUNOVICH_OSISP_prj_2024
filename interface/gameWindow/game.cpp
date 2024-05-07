@@ -154,6 +154,7 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
             else
             {
                 window.setMouseCursorVisible(true);
+                sf::Mouse::setPosition(sf::Vector2i(sf::Mouse::getPosition(window)));
                 if (event.type == sf::Event::Closed)
                 {
                     window.close();
@@ -193,6 +194,10 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                                 this->mapEnemy[coordinates.x][coordinates.y].shape.setFillColor(Red);
                                 std::cout << "Получено с сервера: Killed" << std::endl;
                                 drawKilledShip(coordinates.x,coordinates.y, this->mapEnemy);
+
+                                bool check = true;
+                                victory::Victory(window, check);
+                                window.close();
                             }
 
                             std::cout << "ВЫСТРЕЛ ЗАВЕРШЕН\n" << std::endl;

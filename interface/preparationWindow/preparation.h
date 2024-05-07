@@ -3,7 +3,6 @@
 //
 
 #pragma once
-//#include "SFML/Graphics.hpp"
 #include "../menuBlock/menu.h"
 #include "../../logicpart/place/place.h"
 #include "../gameWindow/game.h"
