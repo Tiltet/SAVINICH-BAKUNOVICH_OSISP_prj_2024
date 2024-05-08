@@ -117,6 +117,11 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
                 receive_message(clientSocket, buffer);
                 printf("Wait: Буфер с сервера = %s\n", buffer);
 
+                if (std::strcmp(buffer, "Lose") == 0)
+                {
+                    victory::Victory(window, false);
+                    window.close();
+                }
 
                 game::ShootCoordinates coordinates{};
                 convert_string_to_ints(buffer, &coordinates.x, &coordinates.y);
@@ -314,12 +319,27 @@ bool game::Game::checkKilled(int x, int y)
             if ((y == 9) || (this->mapUser[x][y+1].state != CellState::Ship))
             {
                 if ((y == 0) || (this->mapUser[x][y-1].state != CellState::Ship))
-
                 {
                     return true;
                 }
+                else if (this->mapUser[x][y-1].state == CellState::Hit)
+                {
+                    checkKilled(x, y-1);
+                }
+            }
+            else if (this->mapUser[x][y+1].state == CellState::Hit)
+            {
+                checkKilled(x, y+1);
             }
         }
+        else if (this->mapUser[x-1][y].state == CellState::Hit)
+        {
+            checkKilled(x-1, y);
+        }
+    }
+    else if (this->mapUser[x+1][y].state == CellState::Hit)
+    {
+        checkKilled(x+1, y);
     }
     return false;
 }
