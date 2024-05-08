@@ -158,6 +158,10 @@ game::Game::Game(sf::RenderWindow &window, sf::RectangleShape background, std::v
 
                 std::cout << "ОЖИДАНИЕ ЗАКОНЧЕНО\n\n" << std::endl;
 
+                window.clear();
+                window.draw(background);
+                this->drawMaps(window);
+                window.display();
             }
             else
             {
@@ -295,7 +299,6 @@ game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window) const
         coordinates.x = rowEnemy;
         coordinates.y = colEnemy;
 
-        std::cout << coordinates.x << " " << coordinates.y << std::endl;
         std::sprintf(buffer, "%s%s", std::to_string(coordinates.x).c_str(), std::to_string(coordinates.y).c_str());
         buffer[strcspn(buffer, "\n")] = '\0';
         std::cout << buffer << std::endl;
@@ -312,6 +315,9 @@ game::ShootCoordinates game::Game::shoot(sf::RenderWindow &window) const
 // ПРОВЕРКА, УНИЧТОЖЕН ЛИ КОРАБЛЬ
 bool game::Game::checkKilled(int x, int y)
 {
+    bool checkKill = false;
+    bool check = false;
+
     if ((x == 9) || (this->mapUser[x+1][y].state != CellState::Ship))
     {
         if ((x == 0) || (this->mapUser[x-1][y].state != CellState::Ship))
@@ -320,34 +326,42 @@ bool game::Game::checkKilled(int x, int y)
             {
                 if ((y == 0) || (this->mapUser[x][y-1].state != CellState::Ship))
                 {
-                    return true;
-                }
-                else if (this->mapUser[x][y-1].state == CellState::Hit)
-                {
-                    checkKilled(x, y-1);
+                    this->mapUser[x][y].state = CellState::HitChecked;
+                    if ((x < 9) && (this->mapUser[x+1][y].state == CellState::Hit))
+                    {
+                        check = true;
+                        checkKill = checkKilled(x+1, y);
+                    }
+                    if ((x > 0) && (this->mapUser[x-1][y].state == CellState::Hit))
+                    {
+                        check = true;
+                        checkKill = checkKilled(x-1, y);
+                    }
+                    if ((y < 9) && (this->mapUser[x][y+1].state == CellState::Hit))
+                    {
+                        check = true;
+                        checkKill = checkKilled(x, y+1);
+                    }
+                    if ((y > 0) && (this->mapUser[x][y-1].state == CellState::Hit))
+                    {
+                        check = true;
+                        checkKill = checkKilled(x, y-1);
+                    }
+                    if (!check)
+                    {
+                        checkKill = true;
+                    }
                 }
             }
-            else if (this->mapUser[x][y+1].state == CellState::Hit)
-            {
-                checkKilled(x, y+1);
-            }
-        }
-        else if (this->mapUser[x-1][y].state == CellState::Hit)
-        {
-            checkKilled(x-1, y);
         }
     }
-    else if (this->mapUser[x+1][y].state == CellState::Hit)
-    {
-        checkKilled(x+1, y);
-    }
-    return false;
+    return checkKill;
 }
 
 // ЗАКРАШИВАЕМ ВСЕ КЛЕТКИ РЯДОМ С УНИЧТОЖЕННЫМ КОРАБЛЕМ
 void game::Game::drawKilledShip(int x, int y, std::vector<std::vector<Cell>>& map)
 {
-    if (map[x][y].state == CellState::Hit)
+    if (map[x][y].state == CellState::Hit || map[x][y].state == CellState::HitChecked)
     {
         map[x][y].state = CellState::Killed;
         map[x][y].shape.setFillColor(sf::Color::Red);

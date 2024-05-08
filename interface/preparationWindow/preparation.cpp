@@ -5,14 +5,16 @@
 #include "preparation.h"
 #include <unistd.h>
 
-pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape background, menu::Menu gameMenu) : gameMenu(std::move(gameMenu))
+pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape background)
 {
-    this->gameMenu.setTitle("Menu", 144, sf::Color::White);
-    this->gameMenu.addItem("Auto", 86, sf::Color::White);
-    this->gameMenu.addItem("Manual", 86, sf::Color::White);
-    this->gameMenu.addItem("Start", 86, sf::Color::White);
-    this->gameMenu.addItem("Exit", 86, sf::Color::White);
-    this->gameMenu.alignMenu(3);
+    menu::Menu menu(globalScreenWight / 4, globalScreenHeight / 6);
+
+    menu.setTitle("Menu", 144, sf::Color::White);
+    menu.addItem("Auto", 86, sf::Color::White);
+    menu.addItem("Manual", 86, sf::Color::White);
+    menu.addItem("Start", 86, sf::Color::White);
+    menu.addItem("Exit", 86, sf::Color::White);
+    menu.alignMenu(3);
 
     std::string currentText;
 
@@ -41,15 +43,15 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
             {
                 if (event.key.code == sf::Keyboard::Up)
                 {
-                    this->gameMenu.moveUp();
+                    menu.moveUp();
                 }
                 else if (event.key.code == sf::Keyboard::Down)
                 {
-                    this->gameMenu.moveDown();
+                    menu.moveDown();
                 }
                 else if (event.key.code == sf::Keyboard::Return)
                 {
-                    int selectedItemIndex = this->gameMenu.getSelectedItemIndex();
+                    int selectedItemIndex = menu.getSelectedItemIndex();
                     switch (selectedItemIndex)
                     {
                         case 0:
@@ -102,7 +104,7 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
         }
         window.clear();
         window.draw(background);
-        this->gameMenu.draw(window);
+        menu.draw(window);
         drawMap(window);
         window.display();
     }

@@ -100,8 +100,7 @@ void interfaceTest()
         }
         else if (check == 1)
         {
-            pre::Preparation preparation(window, background, menu::Menu
-            (globalScreenWight / 5, globalScreenHeight / 5));
+            pre::Preparation preparation(window, background);
             window.close();
         }
         else

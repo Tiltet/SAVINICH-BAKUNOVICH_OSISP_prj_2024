@@ -42,6 +42,35 @@ victory::Victory::Victory(sf::RenderWindow& window, bool check)
             {
                 window.close();
             }
+            else if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Up) {
+                    menu.moveUp();
+                    // sound.play();
+                } else if (event.key.code == sf::Keyboard::Down) {
+                    menu.moveDown();
+                    // sound.play();
+                } else if (event.key.code == sf::Keyboard::Return) {
+                    int selectedItemIndex = menu.getSelectedItemIndex();
+                    switch (selectedItemIndex) {
+                        case 0:
+                            std::cout << "Restart" << std::endl;
+                            this->menuCheck = true;
+                            break;
+                        case 1:
+                            std::cout << "Exit" << std::endl;
+                            window.close();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
+        if (this->menuCheck)
+        {
+            pre::Preparation(window, background);
+            window.close();
         }
 
         window.clear();

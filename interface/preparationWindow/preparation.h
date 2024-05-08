@@ -18,11 +18,10 @@ namespace pre
     class Preparation
     {
     private:
-        menu::Menu gameMenu;
         std::vector<std::vector<Cell>> map;
 
     public:
-        explicit Preparation(sf::RenderWindow &window, sf::RectangleShape background, menu::Menu gameMenu);
+        explicit Preparation(sf::RenderWindow &window, sf::RectangleShape background);
         void initMap();
         void clearMap();
         void drawMap(sf::RenderWindow& window);
