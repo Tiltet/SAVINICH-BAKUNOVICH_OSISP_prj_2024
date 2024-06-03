@@ -13,7 +13,8 @@ void interfaceTest()
     setGlobalFont();
     setGlobalScreenSize();
 
-/*    sf::SoundBuffer soundBuffer;
+
+    /*sf::SoundBuffer soundBuffer;
     if (!soundBuffer.loadFromFile("../interface/sounds/goToMenu.mp3"))
     {
         return;
@@ -25,7 +26,7 @@ void interfaceTest()
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Sea Battle", sf::Style::Fullscreen);
     window.setMouseCursorVisible(false);
 
-    sf::RectangleShape background(sf::Vector2f(globalScreenWigth, globalScreenHeight));
+    sf::RectangleShape background(sf::Vector2f(globalScreenWight, globalScreenHeight));
     sf::Texture texture_window_background1;
     if (!texture_window_background1.loadFromFile("../interface/img/background.jpg"))
     {
@@ -34,7 +35,7 @@ void interfaceTest()
 
     background.setTexture(&texture_window_background1);
 
-    menu::Menu menu(globalScreenWigth / 2, globalScreenWigth / 10);
+    menu::Menu menu(globalScreenWight / 2, globalScreenWight / 10);
 
     menu.setTitle("Sea Battle", 144, sf::Color::White);
     menu.addItem("Classic", 86, sf::Color::White);
@@ -99,15 +100,12 @@ void interfaceTest()
         }
         else if (check == 1)
         {
-            pre::Preparation preparation(window, background, menu::Menu
-            (globalScreenWigth / 5, globalScreenHeight / 5));
+            pre::Preparation preparation(window, background);
             window.close();
         }
         else
         {
             window.close();
         }
-
-        sleep(1);
     }
 }

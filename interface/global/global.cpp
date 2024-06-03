@@ -6,7 +6,10 @@
 #include "iostream"
 
 sf::Font globalFont;
-unsigned int globalScreenWigth;
+sf::Color Grey(191,191,191);
+sf::Color Red(255, 0, 0);
+sf::Color Blue(0, 132, 255);
+unsigned int globalScreenWight;
 unsigned int globalScreenHeight;
 
 void setGlobalFont()
@@ -20,13 +23,13 @@ void setGlobalFont()
 void setGlobalScreenSize()
 {
     sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
-    globalScreenWigth = desktopMode.width;
+    globalScreenWight = desktopMode.width;
     globalScreenHeight = desktopMode.height;
 
 #if defined(__APPLE__)
-    globalScreenWigth = globalScreenWigth / 2 + 5;
+    globalScreenWight = globalScreenWight / 2 + 5;
     globalScreenHeight = globalScreenHeight / 2;
 #endif
 
-    std::cout << globalScreenWigth << " " <<  globalScreenHeight << std::endl;
+    std::cout << globalScreenWight << " " <<  globalScreenHeight << std::endl;
 }

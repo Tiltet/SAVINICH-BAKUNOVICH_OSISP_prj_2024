@@ -4,16 +4,17 @@
 
 #include "preparation.h"
 #include <unistd.h>
-#include "../../user_client/user_client.h"
 
-pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape background, menu::Menu gameMenu) : gameMenu(std::move(gameMenu))
+pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape background)
 {
-    this->gameMenu.setTitle("Menu", 144, sf::Color::White);
-    this->gameMenu.addItem("Auto", 86, sf::Color::White);
-    this->gameMenu.addItem("Manual", 86, sf::Color::White);
-    this->gameMenu.addItem("Start", 86, sf::Color::White);
-    this->gameMenu.addItem("Exit", 86, sf::Color::White);
-    this->gameMenu.alignMenu(3);
+    menu::Menu menu(globalScreenWight / 4, globalScreenHeight / 6);
+
+    menu.setTitle("Menu", 144, sf::Color::White);
+    menu.addItem("Auto", 86, sf::Color::White);
+    menu.addItem("Manual", 86, sf::Color::White);
+    menu.addItem("Start", 86, sf::Color::White);
+    menu.addItem("Exit", 86, sf::Color::White);
+    menu.alignMenu(3);
 
     std::string currentText;
 
@@ -42,15 +43,15 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
             {
                 if (event.key.code == sf::Keyboard::Up)
                 {
-                    this->gameMenu.moveUp();
+                    menu.moveUp();
                 }
                 else if (event.key.code == sf::Keyboard::Down)
                 {
-                    this->gameMenu.moveDown();
+                    menu.moveDown();
                 }
                 else if (event.key.code == sf::Keyboard::Return)
                 {
-                    int selectedItemIndex = this->gameMenu.getSelectedItemIndex();
+                    int selectedItemIndex = menu.getSelectedItemIndex();
                     switch (selectedItemIndex)
                     {
                         case 0:
@@ -93,9 +94,7 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
                     {
                         map[row][col] = 1;
                     }
-                    std::cout << map[row][col] << " ";
                 }
-                std::cout << "\n";
             }
 
 
@@ -105,10 +104,9 @@ pre::Preparation::Preparation(sf::RenderWindow &window, sf::RectangleShape backg
         }
         window.clear();
         window.draw(background);
-        this->gameMenu.draw(window);
+        menu.draw(window);
         drawMap(window);
         window.display();
-        sleep(1);
     }
 }
 
@@ -128,7 +126,7 @@ void pre::Preparation::initMap()
             cell.shape.setOutlineThickness(3.f);
             cell.shape.setFillColor(sf::Color::White);
             cell.shape.setOutlineColor(sf::Color::Black);
-            cell.shape.setPosition(col * 60 + globalScreenWigth / 2, row * 60 + globalScreenHeight / 7);
+            cell.shape.setPosition(col * 60 + globalScreenWight / 2, row * 60 + globalScreenHeight / 7);
         }
     }
 }
@@ -173,7 +171,7 @@ void pre::Preparation::drawShips(std::vector<std::vector<Cell>> &mapUser)
         {
             if (map[row][col] == 1)
             {
-                mapUser[row][col].shape.setFillColor(sf::Color::Red);
+                mapUser[row][col].shape.setFillColor(Blue);
                 mapUser[row][col].state = CellState::Ship;
             }
         }

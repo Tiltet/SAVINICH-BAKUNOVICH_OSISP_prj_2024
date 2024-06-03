@@ -126,5 +126,5 @@ void place(int board[BOARD_SIZE][BOARD_SIZE]) {
     };
 
     placeShips(board, ships);
-    displayBoard(board);
+    // displayBoard(board);
 }

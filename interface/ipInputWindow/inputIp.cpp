@@ -19,19 +19,19 @@ ip::Ip::Ip(sf::RenderWindow &window, const sf::RectangleShape& background) {
     headerText.setString("Title");
     headerText.setCharacterSize(148);
     headerText.setFillColor(sf::Color::Red);
-    headerText.setPosition(globalScreenWigth / 2 - 148, globalScreenHeight / 6);
+    headerText.setPosition(globalScreenWight / 2 - 148, globalScreenHeight / 6);
 
     sf::Text inputText;
     inputText.setFont(textFont);
     inputText.setCharacterSize(96);
     inputText.setFillColor(sf::Color::Black);
-    inputText.setPosition(globalScreenWigth / 2 - 250, globalScreenHeight / 2 - 60);
+    inputText.setPosition(globalScreenWight / 2 - 250, globalScreenHeight / 2 - 60);
 
     sf::RectangleShape textBox;
     textBox.setSize(sf::Vector2f(800, 120));
     textBox.setFillColor(sf::Color::Magenta);
     textBox.setFillColor(sf::Color::White);
-    textBox.setPosition(globalScreenWigth / 2 - 400, globalScreenHeight / 2 - 50);
+    textBox.setPosition(globalScreenWight / 2 - 400, globalScreenHeight / 2 - 50);
 
 
     std::string currentText;
