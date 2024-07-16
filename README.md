@@ -7,8 +7,3 @@
 
 - разработчик серверной части: <a href="https://github.com/kirshunya">Nikita Bakunovich</a></p>
 - разработчик клиентской части: <a href="https://github.com/Tiltet">Savinich Timofey</a>
-
-## Цитаты великих людей
->This is why you need to program.
->
-Savinich Timofey
